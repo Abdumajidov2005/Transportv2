@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TransportPro — Транспортные услуги</title>
+    <title>ARTRANS — Транспортные услуги</title>
+    <link rel="icon" type="image/x-icon" href="./imgs/favicon.ico" />
+    <link rel="apple-touch-icon" href="./imgs/favicon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
@@ -15,18 +17,18 @@
           extend: {
             colors: {
               brand: {
-                50: "#effefa",
-                100: "#d0faf1",
-                200: "#a0f4e4",
-                300: "#63e6d0",
-                400: "#2dd0b6",
-                500: "#14b8a6",
-                600: "#0f766e",
-                700: "#0c5d57",
-                800: "#0a4a45",
-                900: "#072f2d",
+                50: "#e8edf5",
+                100: "#c5d0e4",
+                200: "#9eb2d0",
+                300: "#7793bc",
+                400: "#5a7bac",
+                500: "#0f3060",
+                600: "#0a1e3b",
+                700: "#071629",
+                800: "#050f1d",
+                900: "#030912",
               },
-              accent: "#ea580c",
+              accent: "#b92c4f",
             },
             fontFamily: {
               heading: ["Space Grotesk", "system-ui", "sans-serif"],
@@ -77,7 +79,7 @@
         transition: transform 0.5s ease;
       }
       .svc-row:hover {
-        background: #f0fdfa;
+        background: #e8edf5;
       }
       .svc-row {
         transition: background 0.2s;
@@ -92,24 +94,8 @@
       <div
         class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between"
       >
-        <a href="#" class="flex items-center gap-2.5">
-          <div
-            class="w-8 h-8 rounded-md bg-brand-600 flex items-center justify-center"
-          >
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-              <path
-                d="M3 17h1l1-2h14l1 2h1a1 1 0 001-1v-3a4 4 0 00-4-4h-1V7a2 2 0 00-2-2H7a2 2 0 00-2 2v2H4a4 4 0 00-4 4v3a1 1 0 001 1z"
-                fill="#fff"
-                opacity=".9"
-              />
-              <circle cx="7" cy="17" r="2" fill="#fff" />
-              <circle cx="17" cy="17" r="2" fill="#fff" />
-            </svg>
-          </div>
-          <span
-            class="font-heading font-bold text-lg text-slate-900 tracking-tight"
-            >TransportPro</span
-          >
+        <a href="#" class="flex items-center gap-2">
+          <img src="./imgs/logo.png" alt="ARTRANS" class="h-10" />
         </a>
         <div class="hidden md:flex items-center gap-8">
           <a
@@ -212,7 +198,7 @@
           <div class="flex gap-3 flex-wrap">
             <a
               href="#fleet"
-              class="bg-accent text-white px-7 py-3.5 rounded-lg text-sm font-semibold hover:bg-orange-700 transition-colors"
+              class="bg-accent text-white px-7 py-3.5 rounded-lg text-sm font-semibold hover:bg-[#951f3e] transition-colors"
               >Автопарк</a
             >
             <a
@@ -349,22 +335,7 @@
       >
         <div class="md:col-span-2">
           <div class="flex items-center gap-2.5 mb-4">
-            <div
-              class="w-7 h-7 rounded bg-brand-600 flex items-center justify-center"
-            >
-              <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-                <path
-                  d="M3 17h1l1-2h14l1 2h1a1 1 0 001-1v-3a4 4 0 00-4-4h-1V7a2 2 0 00-2-2H7a2 2 0 00-2 2v2H4a4 4 0 00-4 4v3a1 1 0 001 1z"
-                  fill="#fff"
-                  opacity=".9"
-                />
-                <circle cx="7" cy="17" r="2" fill="#fff" />
-                <circle cx="17" cy="17" r="2" fill="#fff" />
-              </svg>
-            </div>
-            <span class="font-heading font-bold text-white text-[15px]"
-              >TransportPro</span
-            >
+            <img src="./imgs/logo.png" alt="ARTRANS" class="h-9 rounded-md bg-white/10 p-1" />
           </div>
           <p class="text-sm leading-relaxed max-w-xs">
             Транспортные услуги для бизнеса, туризма и частных клиентов. Ташкент
@@ -380,7 +351,7 @@
           <div class="text-sm space-y-2">
             <p>г. Ташкент, Узбекистан</p>
             <p>+998 90 123 45 67</p>
-            <p>info@transportpro.uz</p>
+            <p>info@artrans.uz</p>
           </div>
         </div>
         <div>
@@ -399,7 +370,7 @@
       <div
         class="max-w-6xl mx-auto pt-6 border-t border-white/[.06] text-xs text-center text-slate-500"
       >
-        &copy; 2026 TransportPro
+        &copy; 2026 ARTRANS
       </div>
     </footer>
 
