@@ -164,14 +164,14 @@ var fleet = {
 };
 
 var svcList = [
-  { title: "Обслуживание делегаций", desc: "Полный комплекс транспортного обеспечения для официальных визитов" },
-  { title: "Туристические перевозки", desc: "Комфортные автобусы и минивэны для экскурсионных маршрутов" },
-  { title: "Трансферы", desc: "Встреча и проводы в аэропорту и на ж/д вокзале в любое время" },
-  { title: "VIP обслуживание", desc: "Премиальный транспорт с персональным водителем" },
-  { title: "Корпоративные поездки", desc: "Транспорт для конференций, семинаров и корпоративных событий" },
-  { title: "Международные перевозки", desc: "Организация перевозок по СНГ и за его пределами" },
-  { title: "Обслуживание мероприятий", desc: "Логистика транспорта для форумов и крупных событий" },
-  { title: "Долгосрочная аренда", desc: "Аренда от 1 месяца, развоз сотрудников, регулярные маршруты" }
+  { title: "Обслуживание делегаций", desc: "Полный комплекс транспортного обеспечения для официальных визитов", img: "./imgs/card1.png" },
+  { title: "Туристические перевозки", desc: "Комфортные автобусы и минивэны для экскурсионных маршрутов", img: "./imgs/bus1.jpg" },
+  { title: "Трансферы", desc: "Встреча и проводы в аэропорту и на ж/д вокзале в любое время", img: "./imgs/card5.jfif" },
+  { title: "VIP обслуживание", desc: "Премиальный транспорт с персональным водителем", img: "./imgs/vip1.avif" },
+  { title: "Корпоративные поездки", desc: "Транспорт для конференций, семинаров и корпоративных событий", img: "./imgs/card4.png" },
+  { title: "Международные перевозки", desc: "Организация перевозок по СНГ и за его пределами", img: "./imgs/bus3.jpg" },
+  { title: "Обслуживание мероприятий", desc: "Логистика транспорта для форумов и крупных событий", img: "./imgs/card7.jpg" },
+  { title: "Долгосрочная аренда", desc: "Аренда от 1 месяца, развоз сотрудников, регулярные маршруты", img: "./imgs/card9.png" }
 ];
 
 var clientData = [
@@ -263,15 +263,20 @@ function renderServices() {
 
   svcList.forEach(function (s, i) {
     var card = document.createElement("div");
-    card.className = "svc-row bg-white p-5 sm:p-6 md:p-7";
+    card.className = "svc-row bg-white p-4 sm:p-5 md:p-6";
 
     var num = String(i + 1).padStart(2, "0");
     card.innerHTML =
-      '<div class="flex items-start gap-3 sm:gap-4">' +
-      '<span class="shrink-0 w-8 h-8 rounded-lg bg-brand-50 text-brand-600 font-heading font-bold text-sm flex items-center justify-center mt-0.5">' + num + '</span>' +
-      '<div>' +
-      '<h3 class="font-heading font-bold text-sm sm:text-[15px] text-slate-900 mb-1">' + s.title + '</h3>' +
+      '<div class="flex items-center gap-4 sm:gap-5">' +
+      '<div class="shrink-0 w-[100px] h-[72px] sm:w-[140px] sm:h-[96px] md:w-[160px] md:h-[110px] rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center p-2">' +
+      '<img src="' + s.img + '" alt="' + s.title + '" class="w-full h-full object-contain" loading="lazy">' +
+      '</div>' +
+      '<div class="flex items-start gap-3 flex-1 min-w-0">' +
+      '<span class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-50 text-brand-600 font-heading font-bold text-xs sm:text-sm flex items-center justify-center">' + num + '</span>' +
+      '<div class="min-w-0">' +
+      '<h3 class="font-heading font-bold text-sm sm:text-[15px] md:text-base text-slate-900 mb-1">' + s.title + '</h3>' +
       '<p class="text-xs sm:text-sm text-slate-400 leading-relaxed">' + s.desc + '</p>' +
+      '</div>' +
       '</div>' +
       '</div>';
 
