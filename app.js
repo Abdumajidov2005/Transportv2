@@ -188,18 +188,7 @@ var activeCat = "sedan";
 
 
 // ─── MOBILE MENU ──────────────────────────────────────
-
-function toggleMenu() {
-  var menu = document.getElementById("mobNav");
-  var btn = document.getElementById("burger");
-  menu.classList.toggle("hidden");
-  btn.innerHTML = menu.classList.contains("hidden") ? "&#9776;" : "&#10005;";
-}
-
-function closeMenu() {
-  document.getElementById("mobNav").classList.add("hidden");
-  document.getElementById("burger").innerHTML = "&#9776;";
-}
+// (handled in index.html)
 
 
 // ─── FLEET TABS ───────────────────────────────────────
@@ -215,9 +204,9 @@ function renderTabs() {
     btn.textContent = val.label;
 
     if (key === activeCat) {
-      btn.className = "px-4 py-2 rounded-full text-sm font-semibold bg-brand-600 text-white border-none cursor-pointer";
+      btn.className = "px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-brand-600 text-white border-none cursor-pointer whitespace-nowrap";
     } else {
-      btn.className = "px-4 py-2 rounded-full text-sm font-medium text-slate-500 border border-slate-200 bg-white cursor-pointer hover:border-brand-500 hover:text-brand-600 transition-all";
+      btn.className = "px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-500 border border-slate-200 bg-white cursor-pointer hover:border-brand-500 hover:text-brand-600 transition-all whitespace-nowrap";
     }
 
     btn.addEventListener("click", function () {
@@ -247,18 +236,18 @@ function renderGrid() {
     });
 
     card.innerHTML =
-      '<div class="h-44 overflow-hidden bg-slate-100">' +
+      '<div class="h-40 sm:h-44 overflow-hidden bg-slate-100">' +
       '<img src="' + v.img + '" alt="' + v.name + '" class="fleet-img w-full h-full object-cover" loading="lazy">' +
       '</div>' +
-      '<div class="p-5">' +
+      '<div class="p-4 sm:p-5">' +
       '<div class="flex items-start justify-between gap-2 mb-2">' +
-      '<h3 class="font-heading text-base font-bold text-slate-900">' + v.name + '</h3>' +
+      '<h3 class="font-heading text-[15px] sm:text-base font-bold text-slate-900">' + v.name + '</h3>' +
       '<span class="shrink-0 text-xs text-slate-400 mt-0.5">' + v.year + '</span>' +
       '</div>' +
       '<p class="text-sm text-slate-400 mb-3 line-clamp-2">' + v.desc + '</p>' +
       '<div class="flex items-center justify-between">' +
-      '<span class="text-xs font-semibold text-brand-600 bg-brand-50 px-2.5 py-1 rounded">' + v.seats + ' мест</span>' +
-      '<span class="text-sm font-semibold text-slate-700">' + v.price + '</span>' +
+      '<span class="text-xs font-semibold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full">' + v.seats + ' мест</span>' +
+      '<span class="text-xs sm:text-sm font-semibold text-slate-700">' + v.price + '</span>' +
       '</div>' +
       '</div>';
 
@@ -274,15 +263,15 @@ function renderServices() {
 
   svcList.forEach(function (s, i) {
     var card = document.createElement("div");
-    card.className = "svc-row bg-white p-6 md:p-7";
+    card.className = "svc-row bg-white p-5 sm:p-6 md:p-7";
 
     var num = String(i + 1).padStart(2, "0");
     card.innerHTML =
-      '<div class="flex items-start gap-4">' +
+      '<div class="flex items-start gap-3 sm:gap-4">' +
       '<span class="shrink-0 w-8 h-8 rounded-lg bg-brand-50 text-brand-600 font-heading font-bold text-sm flex items-center justify-center mt-0.5">' + num + '</span>' +
       '<div>' +
-      '<h3 class="font-heading font-bold text-[15px] text-slate-900 mb-1">' + s.title + '</h3>' +
-      '<p class="text-sm text-slate-400 leading-relaxed">' + s.desc + '</p>' +
+      '<h3 class="font-heading font-bold text-sm sm:text-[15px] text-slate-900 mb-1">' + s.title + '</h3>' +
+      '<p class="text-xs sm:text-sm text-slate-400 leading-relaxed">' + s.desc + '</p>' +
       '</div>' +
       '</div>';
 
