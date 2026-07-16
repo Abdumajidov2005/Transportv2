@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ru" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARTRANS — Услуга</title>
+    <link rel="icon" type="image/x-icon" href="./imgs/favicon.ico" />
+    <link rel="apple-touch-icon" href="./imgs/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              accent: "#e94560",
+              dark: { 900: "#0a0a0f", 800: "#0f0f17", 700: "#14141f", 600: "#1a1a28", 500: "#222233", 400: "#2a2a3d" },
+            },
+            fontFamily: {
+              heading: ["Space Grotesk", "system-ui", "sans-serif"],
+              body: ["DM Sans", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body { font-family: "DM Sans", system-ui, sans-serif; }
+      h1,h2,h3,h4,h5,h6 { font-family: "Space Grotesk", system-ui, sans-serif; }
+      nav.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.3); }
+    </style>
+  </head>
+  <body class="bg-dark-900 text-gray-200 overflow-x-hidden">
+    <!-- NAV -->
+    <nav id="mainNav" class="fixed top-0 inset-x-0 z-50 bg-dark-800/95 backdrop-blur-lg border-b border-white/5">
+      <div class="max-w-6xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <img src="./imgs/favicon.png" alt="ARTRANS" class="h-9 w-9 rounded-lg object-cover" />
+          <span class="font-heading font-bold text-lg tracking-tight text-white">ARTRANS</span>
+        </a>
+        <div class="hidden md:flex items-center gap-7">
+          <a href="index.html#fleet" class="text-sm text-gray-400 hover:text-white transition-colors">Автопарк</a>
+          <a href="index.html#services" class="text-sm text-gray-400 hover:text-white transition-colors">Услуги</a>
+          <a href="index.html#clients" class="text-sm text-gray-400 hover:text-white transition-colors">Клиенты</a>
+          <a href="index.html#contact" class="text-sm text-gray-400 hover:text-white transition-colors">Контакты</a>
+          <a href="tel:+998901234567" class="bg-accent text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#c73e54] transition-colors">+998 90 123 45 67</a>
+        </div>
+        <a href="index.html#services" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors">
+          <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>
+        </a>
+      </div>
+    </nav>
+
+    <main class="pt-16">
+      <!-- Hero banner with service image -->
+      <div class="relative w-full h-[40vh] sm:h-[50vh] bg-dark-700 overflow-hidden">
+        <img id="svcImg" src="" alt="" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/50 to-dark-900/20"></div>
+        <div class="absolute bottom-6 left-4 sm:left-8 right-4 sm:right-8 z-10">
+          <p class="text-accent text-xs font-semibold uppercase tracking-wider mb-2" id="svcNum"></p>
+          <h1 class="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-white" id="svcTitle"></h1>
+        </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto px-4 sm:px-5 py-10 sm:py-14">
+        <!-- Description -->
+        <div class="bg-dark-700 border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
+          <h2 class="font-heading font-bold text-white text-lg mb-3">Описание</h2>
+          <p class="text-gray-400 text-sm sm:text-base leading-relaxed" id="svcDesc"></p>
+        </div>
+
+        <!-- What's included -->
+        <div class="bg-dark-700 border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
+          <h2 class="font-heading font-bold text-white text-lg mb-4">Что входит в услугу</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="svcIncludes"></div>
+        </div>
+
+        <!-- Suitable transport -->
+        <div class="bg-dark-700 border border-white/5 rounded-2xl p-6 sm:p-8 mb-6">
+          <h2 class="font-heading font-bold text-white text-lg mb-4">Подходящий транспорт</h2>
+          <div class="flex flex-wrap gap-2" id="svcTransport"></div>
+        </div>
+
+        <!-- CTA -->
+        <div class="bg-gradient-to-r from-dark-600 to-dark-700 border border-white/5 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="font-heading font-bold text-white text-lg mb-1">Заказать услугу</h3>
+            <p class="text-gray-500 text-sm">Ответ менеджера в течение 15 минут</p>
+          </div>
+          <div class="flex gap-3 w-full sm:w-auto">
+            <a href="tel:+998901234567" class="bg-accent hover:bg-[#c73e54] text-white px-6 py-3.5 rounded-full text-sm font-semibold transition-colors text-center flex-1 sm:flex-none whitespace-nowrap">Позвонить</a>
+            <a href="https://t.me/" class="bg-white/[.06] hover:bg-white/[.1] border border-white/10 text-white px-6 py-3.5 rounded-full text-sm font-medium transition-colors text-center flex-1 sm:flex-none whitespace-nowrap">Telegram</a>
+          </div>
+        </div>
+
+        <!-- Other services -->
+        <div class="mt-10">
+          <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">ДРУГИЕ УСЛУГИ</p>
+          <h2 class="font-heading font-bold text-white text-xl mb-5">Смотрите также</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="otherServices"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark-800 border-t border-white/5 text-gray-500 pt-12 md:pt-14 pb-8 px-4 sm:px-5">
+      <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-10">
+        <div class="col-span-2">
+          <div class="flex items-center gap-2.5 mb-4">
+            <img src="./imgs/favicon.png" alt="ARTRANS" class="h-8 w-8 rounded-lg object-cover" />
+            <span class="font-heading font-bold text-white text-base tracking-tight">ARTRANS</span>
+          </div>
+          <p class="text-sm leading-relaxed max-w-xs">Транспортные услуги для бизнеса, туризма и частных клиентов. Ташкент и весь Узбекистан.</p>
+        </div>
+        <div>
+          <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Контакты</h4>
+          <div class="text-sm space-y-2"><p>г. Ташкент, Узбекистан</p><p>+998 90 123 45 67</p><p>info@artrans.uz</p></div>
+        </div>
+        <div>
+          <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Часы работы</h4>
+          <div class="text-sm space-y-2"><p>Пн — Сб: 08:00 – 20:00</p><p>Вс: по запросу</p><p>Диспетчер: круглосуточно</p></div>
+        </div>
+      </div>
+      <div class="max-w-6xl mx-auto pt-6 border-t border-white/[.04] text-xs text-center text-gray-600">&copy; 2026 ARTRANS</div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+      window.addEventListener("scroll", function() {
+        document.getElementById("mainNav").classList.toggle("scrolled", window.scrollY > 10);
+      });
+
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var idx = parseInt(params.get("id"));
+
+        if (isNaN(idx) || !svcList[idx]) {
+          window.location.href = "index.html#services";
+          return;
+        }
+
+        var svc = svcList[idx];
+
+        document.title = "ARTRANS — " + svc.title;
+        document.getElementById("svcImg").src = svc.img;
+        document.getElementById("svcImg").alt = svc.title;
+        document.getElementById("svcNum").textContent = String(idx + 1).padStart(2, "0") + " · УСЛУГА";
+        document.getElementById("svcTitle").textContent = svc.title;
+        document.getElementById("svcDesc").textContent = svc.desc;
+
+        // What's included - generate based on service type
+        var includes = {
+          0: ["Подача транспорта к месту", "Координация маршрута", "Профессиональный водитель", "Встреча и сопровождение", "Планирование логистики", "Контроль времени"],
+          1: ["Комфортабельный транспорт", "Опытный водитель-гид", "Гибкий маршрут", "Кондиционер и Wi-Fi", "Остановки по запросу", "Фото-паузы"],
+          2: ["Встреча с табличкой", "Отслеживание рейса", "Помощь с багажом", "Комфортный автомобиль", "Подача за 15 минут", "Круглосуточно"],
+          3: ["Премиум автомобиль", "Персональный водитель", "Конфиденциальность", "NDA по запросу", "Тонированные стёкла", "Wi-Fi и зарядки"],
+          4: ["Транспорт под мероприятие", "Координация маршрутов", "Несколько автомобилей", "Пунктуальность 99%", "Фирменный сервис", "Отчётность"],
+          5: ["Международные маршруты", "Все документы", "Комфортный транспорт", "Опытные водители", "Страховка включена", "Поддержка 24/7"],
+          6: ["Логистика мероприятия", "Колонна транспорта", "Координация потоков", "Резервный транспорт", "Оперативная связь", "Планирование маршрутов"],
+          7: ["Закреплённый транспорт", "Постоянный водитель", "Гибкий график", "Скидки от 30 дней", "Развоз сотрудников", "Отчётность"]
+        };
+
+        var includesEl = document.getElementById("svcIncludes");
+        var items = includes[idx] || includes[0];
+        includesEl.innerHTML = items.map(function(item) {
+          return '<div class="flex items-center gap-3 bg-dark-600 rounded-xl px-4 py-3 border border-white/5">' +
+            '<svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>' +
+            '<span class="text-sm text-gray-300">' + item + '</span></div>';
+        }).join("");
+
+        // Suitable transport
+        var transport = ["Седан", "Кроссовер", "Минивэн", "Микроавтобус", "Автобус", "VIP"];
+        var transportEl = document.getElementById("svcTransport");
+        transportEl.innerHTML = transport.map(function(t) {
+          return '<a href="index.html#fleet" class="bg-white/5 border border-white/5 text-gray-300 text-sm font-medium px-4 py-2.5 rounded-lg hover:border-accent/30 hover:text-white transition-colors no-underline">' + t + '</a>';
+        }).join("");
+
+        // Other services
+        var otherEl = document.getElementById("otherServices");
+        var others = [];
+        svcList.forEach(function(s, i) {
+          if (i !== idx) others.push({ svc: s, idx: i });
+        });
+        others = others.slice(0, 3);
+
+        otherEl.innerHTML = others.map(function(o) {
+          var num = String(o.idx + 1).padStart(2, "0");
+          return '<a href="service.html?id=' + o.idx + '" class="block bg-dark-700 rounded-xl overflow-hidden border border-white/5 hover:border-accent/30 transition-colors no-underline group">' +
+            '<div class="relative h-28 overflow-hidden">' +
+              '<img src="' + o.svc.img + '" alt="' + o.svc.title + '" class="w-full h-full object-cover opacity-50 group-hover:opacity-70 transition-opacity">' +
+            '</div>' +
+            '<div class="p-4">' +
+              '<span class="text-accent text-[11px] font-semibold">' + num + '</span>' +
+              '<h3 class="font-heading font-bold text-sm text-white mt-1">' + o.svc.title + '</h3>' +
+            '</div></a>';
+        }).join("");
+      })();
+    </script>
+  </body>
+</html>

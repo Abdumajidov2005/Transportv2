@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ru" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARTRANS — Автомобиль</title>
+    <link rel="icon" type="image/x-icon" href="./imgs/favicon.ico" />
+    <link rel="apple-touch-icon" href="./imgs/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              accent: "#e94560",
+              dark: { 900: "#0a0a0f", 800: "#0f0f17", 700: "#14141f", 600: "#1a1a28", 500: "#222233", 400: "#2a2a3d" },
+            },
+            fontFamily: {
+              heading: ["Space Grotesk", "system-ui", "sans-serif"],
+              body: ["DM Sans", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body { font-family: "DM Sans", system-ui, sans-serif; }
+      h1,h2,h3,h4,h5,h6 { font-family: "Space Grotesk", system-ui, sans-serif; }
+      nav.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.3); }
+    </style>
+  </head>
+  <body class="bg-dark-900 text-gray-200 overflow-x-hidden">
+    <!-- NAV -->
+    <nav id="mainNav" class="fixed top-0 inset-x-0 z-50 bg-dark-800/95 backdrop-blur-lg border-b border-white/5">
+      <div class="max-w-6xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <img src="./imgs/favicon.png" alt="ARTRANS" class="h-9 w-9 rounded-lg object-cover" />
+          <span class="font-heading font-bold text-lg tracking-tight text-white">ARTRANS</span>
+        </a>
+        <div class="hidden md:flex items-center gap-7">
+          <a href="index.html#fleet" class="text-sm text-gray-400 hover:text-white transition-colors">Автопарк</a>
+          <a href="index.html#services" class="text-sm text-gray-400 hover:text-white transition-colors">Услуги</a>
+          <a href="index.html#clients" class="text-sm text-gray-400 hover:text-white transition-colors">Клиенты</a>
+          <a href="index.html#contact" class="text-sm text-gray-400 hover:text-white transition-colors">Контакты</a>
+          <a href="tel:+998901234567" class="bg-accent text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#c73e54] transition-colors">+998 90 123 45 67</a>
+        </div>
+        <button class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors" onclick="history.back()">
+          <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <main class="pt-16">
+      <!-- Hero Image -->
+      <div class="relative w-full h-[50vh] sm:h-[60vh] bg-dark-700 overflow-hidden">
+        <img id="carImg" src="" alt="" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-dark-900/30"></div>
+        <!-- Tags -->
+        <div class="absolute top-4 left-4 flex gap-2 flex-wrap" id="carTags"></div>
+        <!-- Back button mobile -->
+        <a href="index.html#fleet" class="absolute top-4 right-4 sm:hidden bg-black/40 backdrop-blur-sm text-white w-9 h-9 rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </a>
+      </div>
+
+      <div class="max-w-5xl mx-auto px-4 sm:px-5 -mt-20 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Left: Info -->
+          <div class="lg:col-span-2">
+            <!-- Title -->
+            <div class="mb-6">
+              <p class="text-accent text-xs font-semibold uppercase tracking-wider mb-1" id="carBrand"></p>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs text-gray-500 bg-white/5 px-2.5 py-1 rounded border border-white/5" id="carCategory"></span>
+              </div>
+              <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-2" id="carModel"></h1>
+              <div class="flex items-center gap-2 mt-2">
+                <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                <span class="text-sm text-gray-400">Ташкент · ДОСТУПНО</span>
+              </div>
+              <p class="text-gray-500 text-sm sm:text-[15px] leading-relaxed mt-4 max-w-xl" id="carDesc"></p>
+            </div>
+
+            <!-- Specs -->
+            <div class="bg-dark-700 border border-white/5 rounded-2xl p-5 sm:p-6 mb-6">
+              <h2 class="font-heading font-bold text-white text-lg mb-4">Характеристики</h2>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" id="carSpecs"></div>
+            </div>
+
+            <!-- Features / Подходит для -->
+            <div class="bg-dark-700 border border-white/5 rounded-2xl p-5 sm:p-6 mb-6">
+              <h2 class="font-heading font-bold text-white text-lg mb-4">Подходит для</h2>
+              <div class="flex flex-wrap gap-2" id="carFeatures"></div>
+            </div>
+
+            <!-- Similar cars -->
+            <div class="mb-10">
+              <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">ПОХОЖИЕ</p>
+              <h2 class="font-heading font-bold text-white text-xl mb-4">Похожие автомобили</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="similarCars"></div>
+            </div>
+          </div>
+
+          <!-- Right: Price & Booking -->
+          <div class="lg:col-span-1">
+            <div class="sticky top-20">
+              <!-- Price card -->
+              <div class="bg-dark-700 border border-white/5 rounded-2xl p-5 sm:p-6 mb-4">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                  <span class="text-xs text-gray-400 uppercase tracking-wider">СЕГОДНЯ</span>
+                </div>
+                <p class="text-[11px] text-gray-500 uppercase tracking-wider">СТОИМОСТЬ</p>
+                <p class="text-2xl sm:text-3xl font-bold text-white mt-1" id="carPrice"></p>
+                <div class="mt-5 space-y-3">
+                  <a href="tel:+998901234567" class="block w-full bg-accent hover:bg-[#c73e54] text-white text-center py-3.5 rounded-full text-sm font-semibold transition-colors">Заявка · позвонить</a>
+                  <a href="https://t.me/" class="block w-full bg-white/[.06] hover:bg-white/[.1] border border-white/10 text-white text-center py-3.5 rounded-full text-sm font-medium transition-colors">Telegram</a>
+                </div>
+              </div>
+
+              <!-- Quick info -->
+              <div class="bg-dark-700 border border-white/5 rounded-2xl p-5 sm:p-6">
+                <div class="space-y-3 text-sm">
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
+                    <span class="text-gray-400">Проверенный водитель</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
+                    <span class="text-gray-400">24/7 поддержка</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
+                    <span class="text-gray-400">Подача за 15 минут</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
+                    <span class="text-gray-400">Детейлинг перед поездкой</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark-800 border-t border-white/5 text-gray-500 pt-12 md:pt-14 pb-8 px-4 sm:px-5 mt-10">
+      <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-10">
+        <div class="col-span-2">
+          <div class="flex items-center gap-2.5 mb-4">
+            <img src="./imgs/favicon.png" alt="ARTRANS" class="h-8 w-8 rounded-lg object-cover" />
+            <span class="font-heading font-bold text-white text-base tracking-tight">ARTRANS</span>
+          </div>
+          <p class="text-sm leading-relaxed max-w-xs">Транспортные услуги для бизнеса, туризма и частных клиентов. Ташкент и весь Узбекистан.</p>
+        </div>
+        <div>
+          <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Контакты</h4>
+          <div class="text-sm space-y-2">
+            <p>г. Ташкент, Узбекистан</p>
+            <p>+998 90 123 45 67</p>
+            <p>info@artrans.uz</p>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Часы работы</h4>
+          <div class="text-sm space-y-2">
+            <p>Пн — Сб: 08:00 – 20:00</p>
+            <p>Вс: по запросу</p>
+            <p>Диспетчер: круглосуточно</p>
+          </div>
+        </div>
+      </div>
+      <div class="max-w-6xl mx-auto pt-6 border-t border-white/[.04] text-xs text-center text-gray-600">&copy; 2026 ARTRANS</div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+      window.addEventListener("scroll", function () {
+        document.getElementById("mainNav").classList.toggle("scrolled", window.scrollY > 10);
+      });
+
+      // Load car from URL params
+      (function() {
+        var params = new URLSearchParams(window.location.search);
+        var cat = params.get("cat");
+        var idx = parseInt(params.get("id"));
+
+        if (!cat || isNaN(idx) || !fleet[cat] || !fleet[cat].items[idx]) {
+          window.location.href = "index.html#fleet";
+          return;
+        }
+
+        var car = fleet[cat].items[idx];
+        var nameParts = car.name.split(" ");
+        var brand = nameParts[0];
+        var model = nameParts.slice(1).join(" ") || brand;
+
+        // Set page title
+        document.title = "ARTRANS — " + car.name;
+
+        // Image
+        document.getElementById("carImg").src = car.img;
+        document.getElementById("carImg").alt = car.name;
+
+        // Tags
+        var tagsEl = document.getElementById("carTags");
+        tagsEl.innerHTML =
+          '<span class="bg-white/15 backdrop-blur-sm text-white text-[11px] font-semibold px-3 py-1.5 rounded uppercase tracking-wide">С ВОДИТЕЛЕМ</span>' +
+          '<span class="bg-accent/80 backdrop-blur-sm text-white text-[11px] font-semibold px-3 py-1.5 rounded uppercase tracking-wide">ДОСТУПНО СЕГОДНЯ</span>';
+
+        // Title area
+        document.getElementById("carBrand").textContent = brand + " · " + fleet[cat].label.toUpperCase();
+        document.getElementById("carModel").textContent = model;
+        document.getElementById("carCategory").textContent = fleet[cat].label;
+        document.getElementById("carDesc").textContent = car.desc;
+
+        // Specs
+        var specsEl = document.getElementById("carSpecs");
+        var specs = [
+          { label: "ГОД", value: car.year },
+          { label: "МЕСТА", value: car.seats },
+          { label: "КАТЕГОРИЯ", value: fleet[cat].label },
+        ];
+        car.features.forEach(function(f) {
+          specs.push({ label: "ОПЦИЯ", value: f });
+        });
+        specsEl.innerHTML = specs.map(function(s) {
+          return '<div class="bg-dark-600 rounded-xl p-3 sm:p-4 border border-white/5">' +
+            '<p class="text-[10px] text-gray-600 uppercase tracking-wider mb-1">' + s.label + '</p>' +
+            '<p class="text-sm sm:text-base font-semibold text-white">' + s.value + '</p>' +
+            '</div>';
+        }).join("");
+
+        // Features / suitable for
+        var featEl = document.getElementById("carFeatures");
+        var suitableFor = ["Деловая поездка", "Встреча гостей", "Корпоратив", "Делегация", "Трансфер", "Тур"];
+        featEl.innerHTML = suitableFor.map(function(f) {
+          return '<span class="bg-white/5 border border-white/5 text-gray-300 text-sm font-medium px-4 py-2.5 rounded-lg">' + f + '</span>';
+        }).join("");
+
+        // Price
+        document.getElementById("carPrice").textContent = car.price;
+
+        // Similar cars
+        var similarEl = document.getElementById("similarCars");
+        var allCars = [];
+        Object.keys(fleet).forEach(function(key) {
+          fleet[key].items.forEach(function(item, i) {
+            if (item !== car) {
+              allCars.push({ car: item, cat: key, idx: i });
+            }
+          });
+        });
+        // Shuffle and pick 2
+        allCars.sort(function() { return 0.5 - Math.random(); });
+        var similar = allCars.slice(0, 2);
+
+        similarEl.innerHTML = similar.map(function(s) {
+          var sNameParts = s.car.name.split(" ");
+          var sBrand = sNameParts[0];
+          var sModel = sNameParts.slice(1).join(" ") || sBrand;
+          return '<a href="car.html?cat=' + s.cat + '&id=' + s.idx + '" class="block bg-dark-700 rounded-2xl overflow-hidden border border-white/5 hover:border-accent/30 transition-colors no-underline">' +
+            '<div class="h-36 sm:h-40 overflow-hidden bg-dark-600">' +
+            '<img src="' + s.car.img + '" alt="' + s.car.name + '" class="w-full h-full object-cover">' +
+            '</div>' +
+            '<div class="p-4">' +
+            '<p class="text-[10px] text-accent font-semibold uppercase tracking-wider">' + sBrand + '</p>' +
+            '<h3 class="font-heading text-base font-bold text-white">' + sModel + '</h3>' +
+            '<div class="flex items-center gap-2 text-xs text-gray-500 mt-2">' +
+            '<span>' + s.car.year + '</span><span class="w-px h-3 bg-white/10"></span>' +
+            '<span>' + s.car.seats + ' мест</span>' +
+            '</div>' +
+            '<p class="text-sm font-semibold text-white mt-2">' + s.car.price + '</p>' +
+            '</div></a>';
+        }).join("");
+      })();
+    </script>
+  </body>
+</html>
