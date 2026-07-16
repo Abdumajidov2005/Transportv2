@@ -243,19 +243,42 @@ function renderGrid() {
       openModal(v);
     });
 
+    var tagsHtml = v.features.slice(0, 2).map(function (f) {
+      return '<span class="bg-black/60 backdrop-blur-sm text-white text-[10px] sm:text-[11px] font-semibold px-2.5 py-1 rounded-full">' + f + '</span>';
+    }).join("");
+
     card.innerHTML =
-      '<div class="h-40 sm:h-44 overflow-hidden bg-slate-100">' +
+      '<div class="relative h-48 sm:h-52 overflow-hidden bg-slate-100">' +
       '<img src="' + v.img + '" alt="' + v.name + '" class="fleet-img w-full h-full object-cover" loading="lazy">' +
+      '<div class="absolute top-3 left-3 flex gap-1.5 flex-wrap">' + tagsHtml + '</div>' +
+      '<div class="absolute bottom-3 right-3 bg-black/50 backdrop-blur-sm text-white text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center gap-1">' +
+      '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' +
+      'Ташкент</div>' +
       '</div>' +
       '<div class="p-4 sm:p-5">' +
-      '<div class="flex items-start justify-between gap-2 mb-2">' +
-      '<h3 class="font-heading text-[15px] sm:text-base font-bold text-slate-900">' + v.name + '</h3>' +
-      '<span class="shrink-0 text-xs text-slate-400 mt-0.5">' + v.year + '</span>' +
+      '<div class="flex items-start justify-between gap-2 mb-1">' +
+      '<div>' +
+      '<p class="text-[11px] text-accent font-semibold uppercase tracking-wide">' + v.name.split(" ")[0] + '</p>' +
+      '<h3 class="font-heading text-base sm:text-lg font-bold text-slate-900">' + v.name.split(" ").slice(1).join(" ") + '</h3>' +
       '</div>' +
-      '<p class="text-sm text-slate-400 mb-3 line-clamp-2">' + v.desc + '</p>' +
-      '<div class="flex items-center justify-between">' +
-      '<span class="text-xs font-semibold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full">' + v.seats + ' мест</span>' +
-      '<span class="text-xs sm:text-sm font-semibold text-slate-700">' + v.price + '</span>' +
+      '<span class="shrink-0 text-xs text-slate-400 bg-slate-50 px-2 py-0.5 rounded">' + fleet[activeCat].label + '</span>' +
+      '</div>' +
+      '<div class="flex items-center gap-2 text-xs text-slate-500 mt-2 mb-4 flex-wrap">' +
+      '<span class="font-medium">' + v.year + '</span>' +
+      '<span class="w-px h-3 bg-slate-200"></span>' +
+      '<span>' + v.seats + ' мест</span>' +
+      '<span class="w-px h-3 bg-slate-200"></span>' +
+      '<span>' + v.features[0] + '</span>' +
+      '</div>' +
+      '<div class="flex items-center justify-between pt-3 border-t border-slate-100">' +
+      '<div>' +
+      '<p class="text-[10px] text-slate-400 uppercase tracking-wide">Стоимость</p>' +
+      '<p class="text-sm sm:text-base font-bold text-slate-900">' + v.price + '</p>' +
+      '</div>' +
+      '<div class="flex gap-2">' +
+      '<button class="text-xs font-medium text-slate-600 border border-slate-200 px-3 py-2 rounded-full hover:bg-slate-50 transition-colors" onclick="event.stopPropagation(); openModal(arguments[0] || window.event)">Подробнее</button>' +
+      '<a href="tel:+998901234567" class="text-xs font-semibold text-white bg-accent px-3 py-2 rounded-full hover:bg-[#a1243f] transition-colors no-underline" onclick="event.stopPropagation()">Заявка</a>' +
+      '</div>' +
       '</div>' +
       '</div>';
 
@@ -271,20 +294,16 @@ function renderServices() {
 
   svcList.forEach(function (s, i) {
     var card = document.createElement("div");
-    card.className = "svc-row bg-white p-4 sm:p-5 md:p-6";
+    card.className = "svc-row relative overflow-hidden";
 
     var num = String(i + 1).padStart(2, "0");
     card.innerHTML =
-      '<div class="flex items-center gap-4 sm:gap-5">' +
-      '<div class="shrink-0 w-[100px] h-[72px] sm:w-[140px] sm:h-[96px] md:w-[160px] md:h-[110px] rounded-xl overflow-hidden bg-slate-100">' +
-      '<img src="' + s.img + '" alt="' + s.title + '" class="w-full h-full object-cover" loading="lazy">' +
-      '</div>' +
-      '<div class="flex items-start gap-3 flex-1 min-w-0">' +
-      '<span class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-50 text-brand-600 font-heading font-bold text-xs sm:text-sm flex items-center justify-center">' + num + '</span>' +
+      '<img src="' + s.img + '" alt="' + s.title + '" class="absolute inset-0 w-full h-full object-cover" loading="lazy">' +
+      '<div class="relative z-10 bg-black/50 p-5 sm:p-6 md:p-8 flex items-center gap-3 min-h-[120px] sm:min-h-[140px]">' +
+      '<span class="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/20 backdrop-blur-sm text-white font-heading font-bold text-xs sm:text-sm flex items-center justify-center border border-white/30">' + num + '</span>' +
       '<div class="min-w-0">' +
-      '<h3 class="font-heading font-bold text-sm sm:text-[15px] md:text-base text-slate-900 mb-1">' + s.title + '</h3>' +
-      '<p class="text-xs sm:text-sm text-slate-400 leading-relaxed">' + s.desc + '</p>' +
-      '</div>' +
+      '<h3 class="font-heading font-bold text-sm sm:text-[15px] md:text-base text-white mb-1">' + s.title + '</h3>' +
+      '<p class="text-xs sm:text-sm text-white/70 leading-relaxed">' + s.desc + '</p>' +
       '</div>' +
       '</div>';
 
