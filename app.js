@@ -92,12 +92,15 @@ var fleet = {
         desc: "Надёжный микроавтобус для групповых трансферов и экскурсий.",
         price: "Цена договорная",
         features: ["12 мест", "Кондиционер", "Высокий потолок", "Багажное отделение"],
-        img: "./imgs/avt2.png"
+        img: "./imgs/avt2.jfif"
       },
       {
-        name: "Joylong", year: 2021, seats: 15,
+        name: "Joylong",
+        year: 2021,
+        seats: 15,
         desc: "Комфортабельный микроавтобус для средних групп.",
-        price: "Цена договорная", features: ["15 мест", "Кондиционер", "Мягкие сиденья", "Микрофон"],
+        price: "Цена договорная",
+        features: ["15 мест", "Кондиционер", "Мягкие сиденья", "Микрофон"],
         img: "./imgs/avt3.avif"
       },
       {
@@ -105,7 +108,8 @@ var fleet = {
         year: 2018, seats: 18,
         desc: "Премиальный микроавтобус для корпоративных перевозок.",
         price: "Цена договорная",
-        features: ["18 мест", "Климат-контроль", "Аудиосистема", "USB зарядки"], img: "./imgs/avt1.avif"
+        features: ["18 мест", "Климат-контроль", "Аудиосистема", "USB зарядки"],
+        img: "./imgs/avt1.avif"
       },
       {
         name: "Eurise", year: 2026, seats: 19,
@@ -140,7 +144,11 @@ var fleet = {
     label: "VIP",
     items: [
       {
-        name: "Mercedes V-Class", year: 2025, seats: 7, desc: "VIP минивэн для первых лиц. Роскошный салон, конфиденциальность.", price: "Цена договорная",
+        name: "Mercedes V-Class",
+        year: 2025,
+        seats: 7,
+        desc: "VIP минивэн для первых лиц. Роскошный салон, конфиденциальность.",
+        price: "Цена договорная",
         features: ["VIP салон", "7 мест", "Тонировка", "Wi-Fi"],
         img: "./imgs/vip1.avif"
       },
@@ -268,8 +276,8 @@ function renderServices() {
     var num = String(i + 1).padStart(2, "0");
     card.innerHTML =
       '<div class="flex items-center gap-4 sm:gap-5">' +
-      '<div class="shrink-0 w-[100px] h-[72px] sm:w-[140px] sm:h-[96px] md:w-[160px] md:h-[110px] rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center p-2">' +
-      '<img src="' + s.img + '" alt="' + s.title + '" class="w-full h-full object-contain" loading="lazy">' +
+      '<div class="shrink-0 w-[100px] h-[72px] sm:w-[140px] sm:h-[96px] md:w-[160px] md:h-[110px] rounded-xl overflow-hidden bg-slate-100">' +
+      '<img src="' + s.img + '" alt="' + s.title + '" class="w-full h-full object-cover" loading="lazy">' +
       '</div>' +
       '<div class="flex items-start gap-3 flex-1 min-w-0">' +
       '<span class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-brand-50 text-brand-600 font-heading font-bold text-xs sm:text-sm flex items-center justify-center">' + num + '</span>' +
