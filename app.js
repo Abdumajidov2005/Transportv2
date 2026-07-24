@@ -321,17 +321,22 @@ function renderClients() {
   var wrap = document.getElementById("clientsList");
   if (!wrap) return;
 
-  clientData.forEach(function (c) {
+  clientData.forEach(function (c, idx) {
     var block = document.createElement("div");
-    block.className = "mb-6 last:mb-0";
+    block.className = "bg-dark-700 border border-white/5 rounded-2xl p-6 sm:p-8 mb-5 last:mb-0 hover:border-accent/20 transition-colors";
 
     var tags = c.names.map(function (n) {
-      return '<span class="bg-white/5 text-gray-300 text-sm font-medium px-4 py-2.5 rounded-lg border border-white/5">' + n + '</span>';
+      return '<span class="bg-dark-600 text-gray-200 text-sm font-medium px-4 py-2.5 rounded-xl border border-white/[.06] hover:border-accent/30 hover:text-white transition-colors">' + n + '</span>';
     }).join("");
 
+    var num = String(idx + 1).padStart(2, "0");
+
     block.innerHTML =
-      '<h3 class="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">' + c.group + '</h3>' +
-      '<div class="flex flex-wrap gap-2">' + tags + '</div>';
+      '<div class="flex items-center gap-3 mb-4">' +
+        '<span class="bg-accent/10 text-accent text-xs font-bold px-2.5 py-1 rounded-lg">' + num + '</span>' +
+        '<h3 class="text-sm font-semibold text-white uppercase tracking-wider">' + c.group + '</h3>' +
+      '</div>' +
+      '<div class="flex flex-wrap gap-2.5">' + tags + '</div>';
 
     wrap.appendChild(block);
   });

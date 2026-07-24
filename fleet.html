@@ -26,6 +26,12 @@
     </script>
     <style>
       body { font-family: "DM Sans", system-ui, sans-serif; }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #0a0a0f; }
+      ::-webkit-scrollbar-thumb { background: #e94560; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #c73e54; }
+      * { scrollbar-width: thin; scrollbar-color: #e94560 #0a0a0f; }
       h1,h2,h3,h4,h5,h6 { font-family: "Space Grotesk", system-ui, sans-serif; }
       .fleet-card { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
       .fleet-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(233,69,96,0.12); }
@@ -33,32 +39,34 @@
       .fleet-img { transition: transform 0.6s ease; }
       #mobNav { max-height:0; overflow:hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding-top:0; padding-bottom:0; }
       #mobNav.open { max-height:300px; padding-top:1rem; padding-bottom:1rem; }
-      nav.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.3); }
+      nav.scrolled { background: rgba(255,255,255,0.05); box-shadow: 0 4px 30px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
       .stats-scroll { -webkit-overflow-scrolling:touch; scrollbar-width:none; }
       .stats-scroll::-webkit-scrollbar { display:none; }
+      .reveal { opacity:0; transform:translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+      .reveal.visible { opacity:1; transform:none; }
     </style>
   </head>
   <body class="bg-dark-900 text-gray-200 overflow-x-hidden">
     <!-- NAV -->
-    <nav id="mainNav" class="fixed top-0 inset-x-0 z-50 bg-dark-800/95 backdrop-blur-lg border-b border-white/5">
-      <div class="max-w-6xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between">
-        <a href="index.html" class="flex items-center gap-2.5">
-          <img src="./imgs/favicon.png" alt="ARTRANS" class="h-9 w-9 rounded-lg object-cover" />
-          <span class="font-heading font-bold text-lg tracking-tight text-white">ARTRANS</span>
+    <nav id="mainNav" class="fixed top-0 inset-x-0 z-50 bg-white/[.03] backdrop-blur-2xl border-b border-white/[.08] transition-all duration-300" style="-webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-3">
+          <img src="./imgs/favicon.png" alt="ARTRANS" class="h-10 w-10 rounded-xl object-cover shadow-lg shadow-accent/10" />
+          <span class="font-heading font-bold text-xl tracking-tight text-white">ARTRANS</span>
         </a>
-        <div class="hidden md:flex items-center gap-7">
-          <a href="fleet.html" class="text-sm text-white font-semibold transition-colors">Автопарк</a>
-          <a href="services.html" class="text-sm text-gray-400 hover:text-white transition-colors">Услуги</a>
-          <a href="clients.html" class="text-sm text-gray-400 hover:text-white transition-colors">Клиенты</a>
-          <a href="contacts.html" class="text-sm text-gray-400 hover:text-white transition-colors">Контакты</a>
-          <a href="tel:+998901234567" class="bg-accent text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#c73e54] transition-colors">+998 90 123 45 67</a>
+        <div class="hidden md:flex items-center gap-8">
+          <a href="fleet.html" class="text-[13px] text-white font-semibold transition-colors">Автопарк</a>
+          <a href="services.html" class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium">Услуги</a>
+          <a href="clients.html" class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium">Клиенты</a>
+          <a href="contacts.html" class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium">Контакты</a>
+          <a href="tel:+998901234567" class="bg-accent text-white text-[13px] font-semibold px-6 py-2.5 rounded-full hover:bg-[#c73e54] transition-all hover:shadow-lg hover:shadow-accent/20">+998 90 123 45 67</a>
         </div>
-        <button id="burger" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors" onclick="toggleMenu()">
+        <button id="burger" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition-colors" onclick="toggleMenu()">
           <svg id="burgerIcon" class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
           <svg id="closeIcon" class="w-5 h-5 text-gray-300 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M6 18L18 6" /></svg>
         </button>
       </div>
-      <div id="mobNav" class="md:hidden bg-dark-800 border-t border-white/5 px-5 flex flex-col gap-1">
+      <div id="mobNav" class="md:hidden bg-dark-800/95 backdrop-blur-xl border-t border-white/5 px-5 flex flex-col gap-1">
         <a href="fleet.html" class="text-sm text-accent font-semibold py-3 border-b border-white/5">Автопарк</a>
         <a href="services.html" class="text-sm text-gray-300 py-3 border-b border-white/5">Услуги</a>
         <a href="clients.html" class="text-sm text-gray-300 py-3 border-b border-white/5">Клиенты</a>
@@ -67,41 +75,103 @@
       </div>
     </nav>
 
-    <!-- PAGE HEADER -->
-    <section class="pt-28 pb-10 px-4 sm:px-5">
-      <div class="max-w-6xl mx-auto">
-        <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">АВТОПАРК · <span id="fleetCount"></span></p>
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-3">Подберём автомобиль<br/>под формат поездки.</h1>
-        <p class="text-gray-500 text-sm sm:text-[15px] max-w-lg">Автопарк из 30+ машин — от седанов до автобусов. Делегации, туризм, корпоративы, VIP.</p>
+    <!-- PAGE HEADER with hero banner -->
+    <section class="relative pt-[72px] overflow-hidden">
+      <!-- Background image -->
+      <div class="absolute inset-0">
+        <img src="./imgs/hero/hero_rasm.jfif" alt="" class="w-full h-full object-cover opacity-30" />
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(10,10,15,0.6) 0%, rgba(10,10,15,0.95) 100%);"></div>
+      </div>
+      <!-- Glow effects -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-[10%] left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-[#e94560]/8 rounded-full blur-[120px]"></div>
+        <div class="absolute top-[30%] right-[5%] w-[400px] h-[300px] bg-[#d4511e]/6 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-0 left-[10%] w-[500px] h-[300px] bg-[#e94560]/5 rounded-full blur-[100px]"></div>
+      </div>
+      <div class="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 pt-16 sm:pt-20 pb-14 sm:pb-20">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <div class="flex items-center gap-3 mb-4">
+              <span class="inline-flex items-center gap-2 bg-accent text-white text-[11px] font-semibold px-4 py-2 rounded-full uppercase tracking-wider shadow-lg shadow-accent/20">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                АВТОПАРК
+              </span>
+              <span class="text-sm text-gray-400 font-medium" id="fleetCount"></span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl md:text-[52px] font-bold tracking-tight text-white mb-4 leading-[1.1]">Подберём автомобиль<br/>под формат поездки.</h1>
+            <p class="text-gray-400 text-[15px] sm:text-base max-w-lg leading-relaxed">От седанов до автобусов — полный спектр транспорта для делегаций, туризма, корпоративов и VIP-обслуживания.</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <a href="tel:+998901234567" class="bg-accent hover:bg-[#c73e54] text-white px-6 py-3 rounded-full text-sm font-semibold transition-all hover:shadow-xl hover:shadow-accent/25 hover:-translate-y-0.5">Заказать авто</a>
+            <a href="https://t.me/" class="bg-white/[.08] hover:bg-white/[.14] backdrop-blur-md border border-white/[.12] text-white px-6 py-3 rounded-full text-sm font-medium transition-all hover:-translate-y-0.5">Telegram</a>
+          </div>
+        </div>
+        <!-- Stats bar -->
+        <div class="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          <div class="bg-white/[.04] backdrop-blur-sm border border-white/[.08] rounded-xl p-4 sm:p-5 text-center">
+            <p class="text-2xl sm:text-3xl font-bold text-white">30+</p>
+            <p class="text-[11px] text-gray-500 mt-1 uppercase tracking-wider">единиц техники</p>
+          </div>
+          <div class="bg-white/[.04] backdrop-blur-sm border border-white/[.08] rounded-xl p-4 sm:p-5 text-center">
+            <p class="text-2xl sm:text-3xl font-bold text-white">6</p>
+            <p class="text-[11px] text-gray-500 mt-1 uppercase tracking-wider">категорий</p>
+          </div>
+          <div class="bg-white/[.04] backdrop-blur-sm border border-white/[.08] rounded-xl p-4 sm:p-5 text-center">
+            <p class="text-2xl sm:text-3xl font-bold text-white">24/7</p>
+            <p class="text-[11px] text-gray-500 mt-1 uppercase tracking-wider">доступность</p>
+          </div>
+          <div class="bg-white/[.04] backdrop-blur-sm border border-white/[.08] rounded-xl p-4 sm:p-5 text-center">
+            <p class="text-2xl sm:text-3xl font-bold text-white">15 мин</p>
+            <p class="text-[11px] text-gray-500 mt-1 uppercase tracking-wider">подача авто</p>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- FLEET -->
-    <section class="pb-16 md:pb-28 px-4 sm:px-5">
-      <div class="max-w-6xl mx-auto">
-        <div class="flex gap-1.5 flex-wrap overflow-x-auto stats-scroll pb-4 mb-6" id="tabs"></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5" id="grid"></div>
+    <section class="py-12 md:py-16 px-4 sm:px-5">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section title -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <h2 class="font-heading text-xl sm:text-2xl font-bold text-white">Выберите категорию</h2>
+          <p class="text-sm text-gray-500">Нажмите на категорию для фильтрации</p>
+        </div>
+        <!-- Tabs with better styling -->
+        <div class="flex gap-2 flex-wrap overflow-x-auto stats-scroll pb-6 mb-8 border-b border-white/[.06]" id="tabs"></div>
+        <!-- Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 reveal" id="grid"></div>
       </div>
     </section>
 
     <!-- CTA -->
     <section class="px-4 sm:px-5 pb-16 md:pb-20">
-      <div class="max-w-6xl mx-auto bg-gradient-to-r from-dark-600 to-dark-700 border border-white/5 rounded-2xl sm:rounded-3xl p-8 sm:p-10 md:p-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
-        <div>
-          <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">КОНСЬЕРЖ-СЕРВИС</p>
-          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight mb-2">Не нашли нужный автомобиль?</h2>
-          <p class="text-gray-500 text-sm sm:text-[15px]">Позвоните нам — подберём оптимальный вариант.</p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
-          <a href="tel:+998901234567" class="bg-accent text-white px-6 py-3.5 rounded-full text-sm font-bold hover:bg-[#c73e54] transition-colors text-center whitespace-nowrap">+998 90 123 45 67</a>
-          <a href="https://t.me/" class="bg-white/[.06] text-white border border-white/10 px-6 py-3.5 rounded-full text-sm font-medium hover:bg-white/[.1] transition-colors text-center whitespace-nowrap">Telegram</a>
+      <div class="max-w-7xl mx-auto relative overflow-hidden bg-gradient-to-br from-dark-700 via-dark-700 to-dark-600 border border-white/[.06] rounded-2xl sm:rounded-3xl p-8 sm:p-12 md:p-16 reveal">
+        <!-- Background glow -->
+        <div class="absolute top-0 right-0 w-[500px] h-[400px] bg-accent/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#d4511e]/8 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+          <div>
+            <span class="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 text-accent text-[11px] font-semibold px-3 py-1.5 rounded-full uppercase tracking-wider mb-4">
+              КОНСЬЕРЖ-СЕРВИС
+            </span>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight mb-3">Не нашли нужный<br/>автомобиль?</h2>
+            <p class="text-gray-400 text-sm sm:text-[15px] max-w-md">Позвоните нам — подберём оптимальный вариант за 15 минут. Ответ от менеджера гарантирован.</p>
+          </div>
+          <div class="flex flex-col gap-3 shrink-0 w-full sm:w-auto">
+            <a href="tel:+998901234567" class="bg-accent text-white px-8 py-4 rounded-full text-sm font-bold hover:bg-[#c73e54] transition-all hover:shadow-xl hover:shadow-accent/25 text-center whitespace-nowrap hover:-translate-y-0.5">
+              +998 90 123 45 67
+            </a>
+            <a href="https://t.me/" class="bg-white/[.06] text-white border border-white/10 px-8 py-4 rounded-full text-sm font-medium hover:bg-white/[.12] transition-all text-center whitespace-nowrap hover:-translate-y-0.5">
+              Написать в Telegram
+            </a>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="bg-dark-800 border-t border-white/5 text-gray-500 pt-12 md:pt-14 pb-8 px-4 sm:px-5">
-      <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-10">
+      <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-10">
         <div class="col-span-2">
           <div class="flex items-center gap-2.5 mb-4">
             <img src="./imgs/favicon.png" alt="ARTRANS" class="h-8 w-8 rounded-lg object-cover" />
@@ -118,7 +188,7 @@
           <div class="text-sm space-y-2"><p>Пн — Сб: 08:00 – 20:00</p><p>Вс: по запросу</p><p>Диспетчер: круглосуточно</p></div>
         </div>
       </div>
-      <div class="max-w-6xl mx-auto pt-6 border-t border-white/[.04] text-xs text-center text-gray-600">&copy; 2026 ARTRANS</div>
+      <div class="max-w-7xl mx-auto pt-6 border-t border-white/[.04] text-xs text-center text-gray-600">&copy; 2026 ARTRANS</div>
     </footer>
 
     <script src="app.js"></script>
@@ -132,6 +202,13 @@
         document.getElementById("burgerIcon").classList.toggle("hidden", open);
         document.getElementById("closeIcon").classList.toggle("hidden", !open);
       }
+
+      // Reveal animation
+      var revealEls = document.querySelectorAll(".reveal");
+      var revealObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add("visible"); revealObs.unobserve(e.target); } });
+      }, { threshold: 0.1 });
+      revealEls.forEach(function(el) { revealObs.observe(el); });
 
       // Check URL for category param
       (function() {
