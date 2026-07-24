@@ -28,6 +28,10 @@
       body { font-family: "DM Sans", system-ui, sans-serif; }
       h1,h2,h3,h4,h5,h6 { font-family: "Space Grotesk", system-ui, sans-serif; }
       nav.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.3); }
+      .similar-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+      .similar-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(233,69,96,0.1); }
+      .similar-card:hover img { transform: scale(1.05); }
+      .similar-card img { transition: transform 0.5s ease; }
     </style>
   </head>
   <body class="bg-dark-900 text-gray-200 overflow-x-hidden">
@@ -52,75 +56,139 @@
     </nav>
 
     <main class="pt-16">
-      <!-- Hero Image -->
-      <div class="relative w-full h-[50vh] sm:h-[60vh] bg-dark-700 overflow-hidden">
+      <!-- Hero Image Section -->
+      <div class="relative w-full h-[45vh] sm:h-[55vh] md:h-[65vh] bg-dark-700 overflow-hidden">
         <img id="carImg" src="" alt="" class="w-full h-full object-cover" />
-        <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-dark-900/30"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/20 to-dark-900/30"></div>
         <!-- Tags -->
-        <div class="absolute top-4 left-4 flex gap-2 flex-wrap" id="carTags"></div>
-        <!-- Back button mobile -->
-        <a href="fleet.html" class="absolute top-4 right-4 sm:hidden bg-black/40 backdrop-blur-sm text-white w-9 h-9 rounded-full flex items-center justify-center">
+        <div class="absolute top-5 left-5 flex gap-2 flex-wrap" id="carTags"></div>
+        <!-- Image counter -->
+        <div class="absolute bottom-5 left-5 bg-black/50 backdrop-blur-sm text-white/80 text-xs font-medium px-3 py-1.5 rounded-full">
+          01 / 01
+        </div>
+        <!-- Back -->
+        <a href="fleet.html" class="absolute top-5 right-5 bg-black/40 backdrop-blur-sm text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/60 transition-colors">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </a>
       </div>
 
-      <div class="max-w-5xl mx-auto px-4 sm:px-5 -mt-20 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Left: Info -->
-          <div class="lg:col-span-2">
-            <!-- Title -->
-            <div class="mb-6">
+      <!-- Content -->
+      <div class="max-w-6xl mx-auto px-4 sm:px-5 -mt-16 sm:-mt-20 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+          <!-- Left Column -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Title Block -->
+            <div class="bg-dark-700/80 backdrop-blur-sm border border-white/5 rounded-2xl p-6 sm:p-8">
               <p class="text-accent text-xs font-semibold uppercase tracking-wider mb-1" id="carBrand"></p>
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-xs text-gray-500 bg-white/5 px-2.5 py-1 rounded border border-white/5" id="carCategory"></span>
+              <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-1" id="carModel"></h1>
+              <div class="flex items-center gap-3 mt-3">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                  <span class="text-sm text-gray-400">Ташкент</span>
+                </span>
+                <span class="text-green-400 text-sm font-medium">● ДОСТУПНО</span>
               </div>
-              <h1 class="font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-2" id="carModel"></h1>
-              <div class="flex items-center gap-2 mt-2">
-                <span class="w-2 h-2 rounded-full bg-green-400"></span>
-                <span class="text-sm text-gray-400">Ташкент · ДОСТУПНО</span>
+              <p class="text-gray-400 text-sm sm:text-[15px] leading-relaxed mt-4 max-w-xl" id="carDesc"></p>
+            </div>
+
+            <!-- Характеристики -->
+            <div class="bg-dark-700 border border-white/5 rounded-2xl p-6 sm:p-8">
+              <h2 class="font-heading font-bold text-white text-xl mb-5">Характеристики</h2>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4" id="carSpecs"></div>
+            </div>
+
+            <!-- Подходит для -->
+            <div class="bg-dark-700 border border-white/5 rounded-2xl p-6 sm:p-8">
+              <h2 class="font-heading font-bold text-white text-xl mb-5">Подходит для</h2>
+              <div class="flex flex-wrap gap-2.5" id="carFeatures"></div>
+            </div>
+
+            <!-- Условия аренды -->
+            <div class="bg-dark-700 border border-white/5 rounded-2xl p-6 sm:p-8">
+              <h2 class="font-heading font-bold text-white text-xl mb-5">Условия аренды</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="carConditions">
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <div><p class="text-sm font-medium text-white">С водителем</p><p class="text-xs text-gray-500">Профессиональный водитель</p></div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <div><p class="text-sm font-medium text-white">Минимальный срок</p><p class="text-xs text-gray-500">1 день · скидки от 7 дней</p></div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <div><p class="text-sm font-medium text-white">Подача</p><p class="text-xs text-gray-500">15 минут по Ташкенту</p></div>
+                </div>
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <div><p class="text-sm font-medium text-white">Отмена</p><p class="text-xs text-gray-500">Бесплатная за 24 часа</p></div>
+                </div>
               </div>
-              <p class="text-gray-500 text-sm sm:text-[15px] leading-relaxed mt-4 max-w-xl" id="carDesc"></p>
             </div>
 
-            <!-- Specs -->
-            <div class="bg-dark-700 border border-white/5 rounded-2xl p-5 sm:p-6 mb-6">
-              <h2 class="font-heading font-bold text-white text-lg mb-4">Характеристики</h2>
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" id="carSpecs"></div>
-            </div>
-
-            <!-- Features / Подходит для -->
-            <div class="bg-dark-700 border border-white/5 rounded-2xl p-5 sm:p-6 mb-6">
-              <h2 class="font-heading font-bold text-white text-lg mb-4">Подходит для</h2>
-              <div class="flex flex-wrap gap-2" id="carFeatures"></div>
-            </div>
-
-            <!-- Similar cars -->
-            <div class="mb-10">
-              <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">ПОХОЖИЕ</p>
-              <h2 class="font-heading font-bold text-white text-xl mb-4">Похожие автомобили</h2>
+            <!-- Похожие автомобили -->
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-1">ПОХОЖИЕ</p>
+                  <h2 class="font-heading font-bold text-white text-xl">Похожие автомобили</h2>
+                </div>
+                <a href="fleet.html" class="text-sm text-accent font-medium hover:underline">Все авто →</a>
+              </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="similarCars"></div>
             </div>
           </div>
 
-          <!-- Right: Price & Booking -->
+          <!-- Right Column: Price + Booking Form -->
           <div class="lg:col-span-1">
-            <div class="sticky top-20">
+            <div class="sticky top-20 space-y-4">
               <!-- Price card -->
-              <div class="bg-dark-700 border border-white/5 rounded-2xl p-5 sm:p-6 mb-4">
-                <div class="flex items-center gap-2 mb-3">
-                  <span class="w-2 h-2 rounded-full bg-green-400"></span>
-                  <span class="text-xs text-gray-400 uppercase tracking-wider">СЕГОДНЯ</span>
+              <div class="bg-dark-700 border border-white/5 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-xs text-green-400 font-medium uppercase">СЕГОДНЯ</span>
+                  </div>
+                  <span class="text-xs text-gray-500 bg-white/5 px-2.5 py-1 rounded" id="carCategory"></span>
                 </div>
                 <p class="text-[11px] text-gray-500 uppercase tracking-wider">СТОИМОСТЬ</p>
                 <p class="text-2xl sm:text-3xl font-bold text-white mt-1" id="carPrice"></p>
-                <div class="mt-5 space-y-3">
-                  <a href="tel:+998901234567" class="block w-full bg-accent hover:bg-[#c73e54] text-white text-center py-3.5 rounded-full text-sm font-semibold transition-colors">Заявка · позвонить</a>
-                  <a href="https://t.me/" class="block w-full bg-white/[.06] hover:bg-white/[.1] border border-white/10 text-white text-center py-3.5 rounded-full text-sm font-medium transition-colors">Telegram</a>
-                </div>
+                <p class="text-xs text-gray-500 mt-1">скидки от 7 дней</p>
               </div>
 
-              <!-- Quick info -->
-              <div class="bg-dark-700 border border-white/5 rounded-2xl p-5 sm:p-6">
+              <!-- Booking Form -->
+              <div class="bg-dark-700 border border-white/5 rounded-2xl p-6">
+                <h3 class="font-heading font-bold text-white text-base mb-4">Заявка на бронирование</h3>
+                <form class="space-y-3" onsubmit="return false;">
+                  <div>
+                    <label class="text-[11px] text-gray-500 uppercase tracking-wider block mb-1">Имя *</label>
+                    <input type="text" placeholder="Ваше имя" class="w-full bg-dark-600 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-accent/50 transition-colors" />
+                  </div>
+                  <div>
+                    <label class="text-[11px] text-gray-500 uppercase tracking-wider block mb-1">Телефон *</label>
+                    <input type="tel" placeholder="+998" class="w-full bg-dark-600 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-accent/50 transition-colors" />
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-[11px] text-gray-500 uppercase tracking-wider block mb-1">Дата начала</label>
+                      <input type="date" class="w-full bg-dark-600 border border-white/10 rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-accent/50 transition-colors" />
+                    </div>
+                    <div>
+                      <label class="text-[11px] text-gray-500 uppercase tracking-wider block mb-1">Дата конца</label>
+                      <input type="date" class="w-full bg-dark-600 border border-white/10 rounded-xl px-3 py-3 text-sm text-white focus:outline-none focus:border-accent/50 transition-colors" />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="text-[11px] text-gray-500 uppercase tracking-wider block mb-1">Комментарий</label>
+                    <textarea rows="3" placeholder="Маршрут, пожелания..." class="w-full bg-dark-600 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-accent/50 transition-colors resize-none"></textarea>
+                  </div>
+                  <button type="submit" class="w-full bg-accent hover:bg-[#c73e54] text-white py-3.5 rounded-full text-sm font-semibold transition-colors mt-2">Отправить заявку</button>
+                </form>
+                <p class="text-[11px] text-gray-600 text-center mt-3">Ответ в течение 15 минут · бесплатная отмена за 24 часа</p>
+              </div>
+
+              <!-- Quick perks -->
+              <div class="bg-dark-700 border border-white/5 rounded-2xl p-5">
                 <div class="space-y-3 text-sm">
                   <div class="flex items-center gap-3">
                     <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
@@ -132,13 +200,25 @@
                   </div>
                   <div class="flex items-center gap-3">
                     <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-                    <span class="text-gray-400">Подача за 15 минут</span>
+                    <span class="text-gray-400">Детейлинг перед поездкой</span>
                   </div>
                   <div class="flex items-center gap-3">
                     <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-                    <span class="text-gray-400">Детейлинг перед поездкой</span>
+                    <span class="text-gray-400">WhatsApp поддержка</span>
                   </div>
                 </div>
+              </div>
+
+              <!-- Call buttons -->
+              <div class="flex flex-col gap-2">
+                <a href="tel:+998901234567" class="flex items-center justify-center gap-2 w-full bg-white/[.06] hover:bg-white/[.1] border border-white/10 text-white py-3.5 rounded-full text-sm font-medium transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                  Позвонить
+                </a>
+                <a href="https://t.me/" class="flex items-center justify-center gap-2 w-full bg-white/[.06] hover:bg-white/[.1] border border-white/10 text-white py-3.5 rounded-full text-sm font-medium transition-colors">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.692-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.248-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.912.489-1.302.481-.428-.009-1.252-.242-1.865-.44-.751-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635.099-.002.321.023.465.141.12.098.153.229.168.326.016.097.035.312.02.482z"/></svg>
+                  Telegram
+                </a>
               </div>
             </div>
           </div>
@@ -147,7 +227,7 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-dark-800 border-t border-white/5 text-gray-500 pt-12 md:pt-14 pb-8 px-4 sm:px-5 mt-10">
+    <footer class="bg-dark-800 border-t border-white/5 text-gray-500 pt-12 md:pt-14 pb-8 px-4 sm:px-5 mt-16">
       <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-10">
         <div class="col-span-2">
           <div class="flex items-center gap-2.5 mb-4">
@@ -158,19 +238,11 @@
         </div>
         <div>
           <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Контакты</h4>
-          <div class="text-sm space-y-2">
-            <p>г. Ташкент, Узбекистан</p>
-            <p>+998 90 123 45 67</p>
-            <p>info@artrans.uz</p>
-          </div>
+          <div class="text-sm space-y-2"><p>г. Ташкент, Узбекистан</p><p>+998 90 123 45 67</p><p>info@artrans.uz</p></div>
         </div>
         <div>
           <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Часы работы</h4>
-          <div class="text-sm space-y-2">
-            <p>Пн — Сб: 08:00 – 20:00</p>
-            <p>Вс: по запросу</p>
-            <p>Диспетчер: круглосуточно</p>
-          </div>
+          <div class="text-sm space-y-2"><p>Пн — Сб: 08:00 – 20:00</p><p>Вс: по запросу</p><p>Диспетчер: круглосуточно</p></div>
         </div>
       </div>
       <div class="max-w-6xl mx-auto pt-6 border-t border-white/[.04] text-xs text-center text-gray-600">&copy; 2026 ARTRANS</div>
@@ -182,7 +254,6 @@
         document.getElementById("mainNav").classList.toggle("scrolled", window.scrollY > 10);
       });
 
-      // Load car from URL params
       (function() {
         var params = new URLSearchParams(window.location.search);
         var cat = params.get("cat");
@@ -198,7 +269,6 @@
         var brand = nameParts[0];
         var model = nameParts.slice(1).join(" ") || brand;
 
-        // Set page title
         document.title = "ARTRANS — " + car.name;
 
         // Image
@@ -206,74 +276,77 @@
         document.getElementById("carImg").alt = car.name;
 
         // Tags
-        var tagsEl = document.getElementById("carTags");
-        tagsEl.innerHTML =
-          '<span class="bg-white/15 backdrop-blur-sm text-white text-[11px] font-semibold px-3 py-1.5 rounded uppercase tracking-wide">С ВОДИТЕЛЕМ</span>' +
-          '<span class="bg-accent/80 backdrop-blur-sm text-white text-[11px] font-semibold px-3 py-1.5 rounded uppercase tracking-wide">ДОСТУПНО СЕГОДНЯ</span>';
+        document.getElementById("carTags").innerHTML =
+          '<span class="bg-white/15 backdrop-blur-sm text-white text-[11px] font-semibold px-3 py-1.5 rounded-full uppercase tracking-wide">С ВОДИТЕЛЕМ</span>' +
+          '<span class="bg-accent/90 backdrop-blur-sm text-white text-[11px] font-semibold px-3 py-1.5 rounded-full uppercase tracking-wide">ДОСТУПНО СЕГОДНЯ</span>';
 
-        // Title area
+        // Title
         document.getElementById("carBrand").textContent = brand + " · " + fleet[cat].label.toUpperCase();
         document.getElementById("carModel").textContent = model;
         document.getElementById("carCategory").textContent = fleet[cat].label;
         document.getElementById("carDesc").textContent = car.desc;
+        document.getElementById("carPrice").textContent = car.price;
 
-        // Specs
+        // Specs grid
         var specsEl = document.getElementById("carSpecs");
         var specs = [
-          { label: "ГОД", value: car.year },
-          { label: "МЕСТА", value: car.seats },
-          { label: "КАТЕГОРИЯ", value: fleet[cat].label },
+          { label: "ГОД", value: car.year, icon: '<svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>' },
+          { label: "МЕСТА", value: car.seats, icon: '<svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>' },
+          { label: "КУЗОВ", value: fleet[cat].label, icon: '<svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>' },
         ];
         car.features.forEach(function(f) {
-          specs.push({ label: "ОПЦИЯ", value: f });
+          specs.push({ label: "ОПЦИЯ", value: f, icon: '<svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>' });
         });
         specsEl.innerHTML = specs.map(function(s) {
-          return '<div class="bg-dark-600 rounded-xl p-3 sm:p-4 border border-white/5">' +
-            '<p class="text-[10px] text-gray-600 uppercase tracking-wider mb-1">' + s.label + '</p>' +
-            '<p class="text-sm sm:text-base font-semibold text-white">' + s.value + '</p>' +
-            '</div>';
+          return '<div class="bg-dark-600 rounded-xl p-4 border border-white/5 flex flex-col items-start gap-2">' +
+            s.icon +
+            '<p class="text-[10px] text-gray-500 uppercase tracking-wider">' + s.label + '</p>' +
+            '<p class="text-sm font-semibold text-white">' + s.value + '</p>' +
+          '</div>';
         }).join("");
 
-        // Features / suitable for
+        // Suitable for tags
         var featEl = document.getElementById("carFeatures");
-        var suitableFor = ["Деловая поездка", "Встреча гостей", "Корпоратив", "Делегация", "Трансфер", "Тур"];
+        var suitableFor = ["Деловая поездка", "Встреча гостей", "Свадьба", "Делегация", "Аэропорт-трансфер", "Тур", "Корпоратив", "Межгород"];
         featEl.innerHTML = suitableFor.map(function(f) {
-          return '<span class="bg-white/5 border border-white/5 text-gray-300 text-sm font-medium px-4 py-2.5 rounded-lg">' + f + '</span>';
+          return '<span class="bg-dark-600 border border-white/5 text-gray-300 text-sm font-medium px-4 py-2.5 rounded-full hover:border-accent/30 hover:text-white transition-colors cursor-default">' + f + '</span>';
         }).join("");
-
-        // Price
-        document.getElementById("carPrice").textContent = car.price;
 
         // Similar cars
         var similarEl = document.getElementById("similarCars");
         var allCars = [];
         Object.keys(fleet).forEach(function(key) {
           fleet[key].items.forEach(function(item, i) {
-            if (item !== car) {
-              allCars.push({ car: item, cat: key, idx: i });
-            }
+            if (item !== car) allCars.push({ car: item, cat: key, idx: i });
           });
         });
-        // Shuffle and pick 2
         allCars.sort(function() { return 0.5 - Math.random(); });
-        var similar = allCars.slice(0, 2);
+        var similar = allCars.slice(0, 3);
 
         similarEl.innerHTML = similar.map(function(s) {
           var sNameParts = s.car.name.split(" ");
           var sBrand = sNameParts[0];
           var sModel = sNameParts.slice(1).join(" ") || sBrand;
-          return '<a href="car.html?cat=' + s.cat + '&id=' + s.idx + '" class="block bg-dark-700 rounded-2xl overflow-hidden border border-white/5 hover:border-accent/30 transition-colors no-underline">' +
-            '<div class="h-36 sm:h-40 overflow-hidden bg-dark-600">' +
-            '<img src="' + s.car.img + '" alt="' + s.car.name + '" class="w-full h-full object-cover">' +
+          return '<a href="car.html?cat=' + s.cat + '&id=' + s.idx + '" class="similar-card block bg-dark-700 rounded-2xl overflow-hidden border border-white/5 hover:border-accent/30 no-underline">' +
+            '<div class="relative h-36 sm:h-44 overflow-hidden bg-dark-600">' +
+              '<img src="' + s.car.img + '" alt="' + s.car.name + '" class="w-full h-full object-cover" loading="lazy">' +
+              '<div class="absolute top-3 left-3 flex gap-1.5">' +
+                '<span class="bg-white/15 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-1 rounded-full uppercase">С ВОДИТЕЛЕМ</span>' +
+              '</div>' +
+              '<div class="absolute bottom-3 right-3 bg-black/50 backdrop-blur-sm text-white/80 text-[10px] px-2 py-1 rounded-full">Ташкент</div>' +
             '</div>' +
-            '<div class="p-4">' +
-            '<p class="text-[10px] text-accent font-semibold uppercase tracking-wider">' + sBrand + '</p>' +
-            '<h3 class="font-heading text-base font-bold text-white">' + sModel + '</h3>' +
-            '<div class="flex items-center gap-2 text-xs text-gray-500 mt-2">' +
-            '<span>' + s.car.year + '</span><span class="w-px h-3 bg-white/10"></span>' +
-            '<span>' + s.car.seats + ' мест</span>' +
-            '</div>' +
-            '<p class="text-sm font-semibold text-white mt-2">' + s.car.price + '</p>' +
+            '<div class="p-4 sm:p-5">' +
+              '<p class="text-[10px] text-accent font-semibold uppercase tracking-wider">' + sBrand + '</p>' +
+              '<h3 class="font-heading text-base font-bold text-white mt-0.5">' + sModel + '</h3>' +
+              '<div class="flex items-center gap-2 text-xs text-gray-500 mt-2">' +
+                '<span>' + s.car.year + '</span><span class="w-px h-3 bg-white/10"></span>' +
+                '<span>' + s.car.seats + ' мест</span><span class="w-px h-3 bg-white/10"></span>' +
+                '<span>' + s.car.features[0] + '</span>' +
+              '</div>' +
+              '<div class="flex items-center justify-between mt-3 pt-3 border-t border-white/5">' +
+                '<p class="text-sm font-bold text-white">' + s.car.price + '</p>' +
+                '<span class="text-xs text-accent font-medium">Подробнее →</span>' +
+              '</div>' +
             '</div></a>';
         }).join("");
       })();
