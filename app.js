@@ -176,10 +176,39 @@ var svcList = [
 ];
 
 var clientData = [
-  { group: "Туристические агентства", names: ["ASIA LUXE", "CENTRUM HOLIDAYS", "FUN SUN", "PRISTAGE"] },
-  { group: "Корпоративные клиенты", names: ["TURON BANK", "SEA BREEZE", "NRG", "AKFA", "YANDEX MARKET", "KAPITAL BANK"] },
-  { group: "Международные организации", names: ["NASA", "Посольство Казахстана", "Посольство Малайзии", "Посольство России"] },
-  { group: "Государственные учреждения", names: ["Транспорт Вазирлиги", "Инвестиция Вазирлиги", "Соғлиқни сақлаш Вазирлиги"] }
+  {
+    group: "Туристические агентства", clients: [
+      { name: "ASIA LUXE", logo: "./imgs/logos/logo1.png" },
+      { name: "CENTRUM HOLIDAYS", logo: "./imgs/logos/logo2.png" },
+      { name: "FUN SUN", logo: "./imgs/logos/logo3.svg" },
+      { name: "PRISTAGE", logo: "./imgs/logos/logo4.png" }
+    ]
+  },
+  {
+    group: "Корпоративные клиенты", clients: [
+      { name: "TURON BANK", logo: "./imgs/logos/logo5.webp" },
+      { name: "SEA BREEZE", logo: "./imgs/logos/logo6.png" },
+      { name: "NRG", logo: "./imgs/logos/logo7.png" },
+      { name: "AKFA", logo: "./imgs/logos/logo8.png" },
+      { name: "YANDEX MARKET", logo: "./imgs/logos/logo9.png" },
+      { name: "KAPITAL BANK", logo: "./imgs/logos/logo10.jpg" }
+    ]
+  },
+  {
+    group: "Международные организации", clients: [
+      { name: "NASA", logo: "./imgs/logos/logo11.jpg" },
+      { name: "Посольство Казахстана", logo: "./imgs/logos/logo12.jpg" },
+      { name: "Посольство Малайзии", logo: "./imgs/logos/logo13.svg" },
+      { name: "Посольство России", logo: "./imgs/logos/logo14.png" }
+    ]
+  },
+  {
+    group: "Государственные учреждения", clients: [
+      { name: "Транспорт Вазирлиги", logo: "./imgs/logos/logo16.png" },
+      { name: "Инвестиция Вазирлиги", logo: "./imgs/logos/logo17.webp" },
+      { name: "Соғлиқни сақлаш Вазирлиги", logo: "./imgs/logos/logo18.png" }
+    ]
+  }
 ];
 
 
@@ -197,7 +226,7 @@ function renderTabs() {
 
   // Update fleet count
   var total = 0;
-  Object.values(fleet).forEach(function(cat) { total += cat.items.length; });
+  Object.values(fleet).forEach(function (cat) { total += cat.items.length; });
   var countEl = document.getElementById("fleetCount");
   if (countEl) countEl.textContent = total + " АВТО";
 
@@ -246,36 +275,36 @@ function renderGrid() {
 
     card.innerHTML =
       '<div class="relative h-40 sm:h-44 overflow-hidden bg-dark-600">' +
-        '<img src="' + v.img + '" alt="' + v.name + '" class="fleet-img w-full h-full object-cover" loading="lazy">' +
-        '<div class="absolute top-2.5 left-2.5 flex gap-1.5 flex-wrap">' + tag1 + tag2 + '</div>' +
-        '<div class="absolute bottom-2.5 right-2.5 bg-black/50 backdrop-blur-sm text-white/80 text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">' +
-          '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' +
-          'Ташкент</div>' +
+      '<img src="' + v.img + '" alt="' + v.name + '" class="fleet-img w-full h-full object-cover" loading="lazy">' +
+      '<div class="absolute top-2.5 left-2.5 flex gap-1.5 flex-wrap">' + tag1 + tag2 + '</div>' +
+      '<div class="absolute bottom-2.5 right-2.5 bg-black/50 backdrop-blur-sm text-white/80 text-[10px] font-medium px-2 py-0.5 rounded-full flex items-center gap-1">' +
+      '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' +
+      'Ташкент</div>' +
       '</div>' +
       '<div class="p-4">' +
-        '<div class="flex items-start justify-between gap-2 mb-1">' +
-          '<div>' +
-            '<p class="text-[10px] text-accent font-semibold uppercase tracking-wider">' + brand + '</p>' +
-            '<h3 class="font-heading text-base sm:text-lg font-bold text-white">' + model + '</h3>' +
-          '</div>' +
-          '<span class="shrink-0 text-[10px] text-gray-500 bg-white/5 px-2 py-0.5 rounded">' + fleet[activeCat].label + '</span>' +
-        '</div>' +
-        '<div class="flex items-center flex-wrap gap-0 text-[11px] sm:text-[12px] text-gray-400 mt-2 mb-4">' +
-          '<span class="pr-2 border-r border-white/10">' + v.year + '</span>' +
-          '<span class="px-2 border-r border-white/10">' + v.seats + ' мест</span>' +
-          '<span class="px-2 border-r border-white/10">' + v.features[0] + '</span>' +
-          '<span class="pl-2">' + (v.features[1] || '') + '</span>' +
-        '</div>' +
-        '<div class="flex items-center justify-between pt-3 border-t border-white/5">' +
-          '<div>' +
-            '<p class="text-[9px] text-gray-500 uppercase tracking-wider">ОТ / ДЕНЬ</p>' +
-            '<p class="text-sm font-bold text-white">' + v.price + '</p>' +
-          '</div>' +
-          '<div class="flex gap-1.5">' +
-            '<span class="text-[11px] font-medium text-gray-300 border border-white/10 px-3 py-2 rounded-full hover:border-white/30 transition-colors">Подробнее</span>' +
-            '<span class="text-[11px] font-semibold text-white bg-accent px-3 py-2 rounded-full">Заявка</span>' +
-          '</div>' +
-        '</div>' +
+      '<div class="flex items-start justify-between gap-2 mb-1">' +
+      '<div>' +
+      '<p class="text-[10px] text-accent font-semibold uppercase tracking-wider">' + brand + '</p>' +
+      '<h3 class="font-heading text-base sm:text-lg font-bold text-white">' + model + '</h3>' +
+      '</div>' +
+      '<span class="shrink-0 text-[10px] text-gray-500 bg-white/5 px-2 py-0.5 rounded">' + fleet[activeCat].label + '</span>' +
+      '</div>' +
+      '<div class="flex items-center flex-wrap gap-0 text-[11px] sm:text-[12px] text-gray-400 mt-2 mb-4">' +
+      '<span class="pr-2 border-r border-white/10">' + v.year + '</span>' +
+      '<span class="px-2 border-r border-white/10">' + v.seats + ' мест</span>' +
+      '<span class="px-2 border-r border-white/10">' + v.features[0] + '</span>' +
+      '<span class="pl-2">' + (v.features[1] || '') + '</span>' +
+      '</div>' +
+      '<div class="flex items-center justify-between pt-3 border-t border-white/5">' +
+      '<div>' +
+      '<p class="text-[9px] text-gray-500 uppercase tracking-wider">ОТ / ДЕНЬ</p>' +
+      '<p class="text-sm font-bold text-white">' + v.price + '</p>' +
+      '</div>' +
+      '<div class="flex gap-1.5">' +
+      '<span class="text-[11px] font-medium text-gray-300 border border-white/10 px-3 py-2 rounded-full hover:border-white/30 transition-colors">Подробнее</span>' +
+      '<span class="text-[11px] font-semibold text-white bg-accent px-3 py-2 rounded-full">Заявка</span>' +
+      '</div>' +
+      '</div>' +
       '</div>';
 
     grid.appendChild(card);
@@ -297,17 +326,17 @@ function renderServices() {
     var num = String(i + 1).padStart(2, "0");
     card.innerHTML =
       '<div class="relative h-44 sm:h-48 overflow-hidden shrink-0">' +
-        '<img src="' + s.img + '" alt="' + s.title + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">' +
-        '<div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent"></div>' +
-        '<span class="absolute top-4 left-4 bg-accent/90 backdrop-blur-sm text-white text-[11px] font-bold px-3 py-1.5 rounded-full">' + num + '</span>' +
+      '<img src="' + s.img + '" alt="' + s.title + '" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">' +
+      '<div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 via-dark-900/20 to-transparent"></div>' +
+      '<span class="absolute top-4 left-4 bg-accent/90 backdrop-blur-sm text-white text-[11px] font-bold px-3 py-1.5 rounded-full">' + num + '</span>' +
       '</div>' +
       '<div class="p-5 sm:p-6 flex flex-col flex-1">' +
-        '<h3 class="font-heading font-bold text-base sm:text-lg text-white mb-2 group-hover:text-accent transition-colors">' + s.title + '</h3>' +
-        '<p class="text-sm text-gray-400 leading-relaxed mb-4 flex-1">' + s.desc + '</p>' +
-        '<div class="flex items-center gap-2 text-accent text-sm font-medium mt-auto">' +
-          '<span>Подробнее</span>' +
-          '<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>' +
-        '</div>' +
+      '<h3 class="font-heading font-bold text-base sm:text-lg text-white mb-2 group-hover:text-accent transition-colors">' + s.title + '</h3>' +
+      '<p class="text-sm text-gray-400 leading-relaxed mb-4 flex-1">' + s.desc + '</p>' +
+      '<div class="flex items-center gap-2 text-accent text-sm font-medium mt-auto">' +
+      '<span>Подробнее</span>' +
+      '<svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>' +
+      '</div>' +
       '</div>';
 
     grid.appendChild(card);
@@ -321,25 +350,16 @@ function renderClients() {
   var wrap = document.getElementById("clientsList");
   if (!wrap) return;
 
-  clientData.forEach(function (c, idx) {
-    var block = document.createElement("div");
-    block.className = "bg-dark-700 border border-white/5 rounded-2xl p-6 sm:p-8 mb-5 last:mb-0 hover:border-accent/20 transition-colors";
+  var allHTML = '<div class="flex flex-wrap items-center justify-center gap-8 sm:gap-12 md:gap-16">';
 
-    var tags = c.names.map(function (n) {
-      return '<span class="bg-dark-600 text-gray-200 text-sm font-medium px-4 py-2.5 rounded-xl border border-white/[.06] hover:border-accent/30 hover:text-white transition-colors">' + n + '</span>';
-    }).join("");
-
-    var num = String(idx + 1).padStart(2, "0");
-
-    block.innerHTML =
-      '<div class="flex items-center gap-3 mb-4">' +
-        '<span class="bg-accent/10 text-accent text-xs font-bold px-2.5 py-1 rounded-lg">' + num + '</span>' +
-        '<h3 class="text-sm font-semibold text-white uppercase tracking-wider">' + c.group + '</h3>' +
-      '</div>' +
-      '<div class="flex flex-wrap gap-2.5">' + tags + '</div>';
-
-    wrap.appendChild(block);
+  clientData.forEach(function (c) {
+    c.clients.forEach(function (client) {
+      allHTML += '<img src="' + client.logo + '" alt="' + client.name + '" title="' + client.name + '" class="h-12 sm:h-16 md:h-20 w-auto object-contain opacity-60 hover:opacity-100 hover:scale-110 transition-all duration-300 grayscale hover:grayscale-0">';
+    });
   });
+
+  allHTML += '</div>';
+  wrap.innerHTML = allHTML;
 }
 
 

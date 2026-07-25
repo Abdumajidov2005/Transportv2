@@ -7,14 +7,24 @@
     <link rel="icon" type="image/x-icon" href="./imgs/favicon.ico" />
     <link rel="apple-touch-icon" href="./imgs/favicon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
               accent: "#e94560",
-              dark: { 900: "#0a0a0f", 800: "#0f0f17", 700: "#14141f", 600: "#1a1a28", 500: "#222233", 400: "#2a2a3d" },
+              dark: {
+                900: "#0a0a0f",
+                800: "#0f0f17",
+                700: "#14141f",
+                600: "#1a1a28",
+                500: "#222233",
+                400: "#2a2a3d",
+              },
             },
             fontFamily: {
               heading: ["Space Grotesk", "system-ui", "sans-serif"],
@@ -25,136 +35,405 @@
       };
     </script>
     <style>
-      body { font-family: "DM Sans", system-ui, sans-serif; }
+      body {
+        font-family: "DM Sans", system-ui, sans-serif;
+      }
       /* Custom scrollbar */
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: #0a0a0f; }
-      ::-webkit-scrollbar-thumb { background: #e94560; border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: #c73e54; }
-      * { scrollbar-width: thin; scrollbar-color: #e94560 #0a0a0f; }
-      h1,h2,h3,h4,h5,h6 { font-family: "Space Grotesk", system-ui, sans-serif; }
-      @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
-      .fade-up { animation: fadeUp 0.35s ease; }
-      .fleet-card { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
-      .fleet-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(233,69,96,0.12); }
-      .fleet-card:hover .fleet-img { transform: scale(1.06); }
-      .fleet-img { transition: transform 0.6s ease; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; }
-      .svc-card { transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column; }
-      .svc-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(233,69,96,0.12); }
-      #mobNav { max-height:0; overflow:hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding-top:0; padding-bottom:0; }
-      #mobNav.open { max-height:300px; padding-top:1rem; padding-bottom:1rem; }
-      nav.scrolled { background: rgba(255,255,255,0.05); box-shadow: 0 4px 30px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
-      .reveal { opacity:1; transform:none; }
-      .stats-scroll { -webkit-overflow-scrolling:touch; scrollbar-width:none; }
-      .stats-scroll::-webkit-scrollbar { display:none; }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0f;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #e94560;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #c73e54;
+      }
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: #e94560 #0a0a0f;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Space Grotesk", system-ui, sans-serif;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .fade-up {
+        animation: fadeUp 0.35s ease;
+      }
+      .fleet-card {
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease,
+          border-color 0.25s ease;
+      }
+      .fleet-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 48px rgba(233, 69, 96, 0.12);
+      }
+      .fleet-card:hover .fleet-img {
+        transform: scale(1.06);
+      }
+      .fleet-img {
+        transition: transform 0.6s ease;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+      }
+      .svc-card {
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease,
+          border-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .svc-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(233, 69, 96, 0.12);
+      }
+      #mobNav {
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.3s ease,
+          padding 0.3s ease;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+      #mobNav.open {
+        max-height: 300px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+      nav.scrolled {
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+      }
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+      .stats-scroll {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .stats-scroll::-webkit-scrollbar {
+        display: none;
+      }
     </style>
   </head>
   <body class="bg-dark-900 text-gray-200 overflow-x-hidden">
     <!-- Glow that bleeds up behind navbar -->
     <div class="fixed top-0 left-0 right-0 h-72 z-40 pointer-events-none">
-      <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-full h-full bg-[#d4511e]/18 rounded-full blur-[100px]"></div>
-      <div class="absolute -top-5 left-[10%] w-[500px] h-[200px] bg-[#ff6b35]/12 rounded-full blur-[80px]"></div>
-      <div class="absolute -top-5 right-[10%] w-[500px] h-[200px] bg-[#e8621c]/12 rounded-full blur-[80px]"></div>
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[150px] bg-[#ff8c42]/10 rounded-full blur-[70px]"></div>
+      <div
+        class="absolute -top-10 left-1/2 -translate-x-1/2 w-full h-full bg-[#d4511e]/18 rounded-full blur-[100px]"
+      ></div>
+      <div
+        class="absolute -top-5 left-[10%] w-[500px] h-[200px] bg-[#ff6b35]/12 rounded-full blur-[80px]"
+      ></div>
+      <div
+        class="absolute -top-5 right-[10%] w-[500px] h-[200px] bg-[#e8621c]/12 rounded-full blur-[80px]"
+      ></div>
+      <div
+        class="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[150px] bg-[#ff8c42]/10 rounded-full blur-[70px]"
+      ></div>
     </div>
 
     <!-- NAV -->
-    <nav id="mainNav" class="fixed top-0 inset-x-0 z-50 bg-white/[.03] backdrop-blur-2xl border-b border-white/[.08] transition-all duration-300" style="-webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);">
-      <div class="max-w-7xl mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between">
+    <nav
+      id="mainNav"
+      class="fixed top-0 inset-x-0 z-50 bg-white/[.03] backdrop-blur-2xl border-b border-white/[.08] transition-all duration-300"
+      style="-webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px)"
+    >
+      <div
+        class="max-w-7xl mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between"
+      >
         <a href="index.html" class="flex items-center gap-3">
-          <img src="./imgs/favicon.png" alt="ARTRANS" class="h-10 w-10 rounded-xl object-cover shadow-lg shadow-accent/10" />
-          <span class="font-heading font-bold text-xl tracking-tight text-white">ARTRANS</span>
+          <img
+            src="./imgs/favicon.png"
+            alt="ARTRANS"
+            class="h-10 w-10 rounded-xl object-cover shadow-lg shadow-accent/10"
+          />
+          <span class="font-heading font-bold text-xl tracking-tight text-white"
+            >ARTRANS</span
+          >
         </a>
         <div class="hidden md:flex items-center gap-8">
-          <a href="fleet.html" class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium">Автопарк</a>
-          <a href="services.html" class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium">Услуги</a>
-          <a href="clients.html" class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium">Клиенты</a>
-          <a href="contacts.html" class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium">Контакты</a>
-          <a href="tel:+998901234567" class="bg-accent text-white text-[13px] font-semibold px-6 py-2.5 rounded-full hover:bg-[#c73e54] transition-all hover:shadow-lg hover:shadow-accent/20">+998 90 123 45 67</a>
+          <a
+            href="fleet.html"
+            class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium"
+            >Автопарк</a
+          >
+          <a
+            href="services.html"
+            class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium"
+            >Услуги</a
+          >
+          <a
+            href="clients.html"
+            class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium"
+            >Клиенты</a
+          >
+          <a
+            href="contacts.html"
+            class="text-[13px] text-gray-300 hover:text-white transition-colors font-medium"
+            >Контакты</a
+          >
+          <a
+            href="tel:+998901234567"
+            class="bg-accent text-white text-[13px] font-semibold px-6 py-2.5 rounded-full hover:bg-[#c73e54] transition-all hover:shadow-lg hover:shadow-accent/20"
+            >+998 90 123 45 67</a
+          >
         </div>
-        <button id="burger" class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition-colors" onclick="toggleMenu()">
-          <svg id="burgerIcon" class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-          <svg id="closeIcon" class="w-5 h-5 text-gray-300 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M6 18L18 6" /></svg>
+        <button
+          id="burger"
+          class="md:hidden w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition-colors"
+          onclick="toggleMenu()"
+        >
+          <svg
+            id="burgerIcon"
+            class="w-5 h-5 text-gray-300"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg
+            id="closeIcon"
+            class="w-5 h-5 text-gray-300 hidden"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" d="M6 6l12 12M6 18L18 6" />
+          </svg>
         </button>
       </div>
-      <div id="mobNav" class="md:hidden bg-dark-800/95 backdrop-blur-xl border-t border-white/5 px-5 flex flex-col gap-1">
-        <a href="fleet.html" class="text-sm text-gray-300 py-3 border-b border-white/5">Автопарк</a>
-        <a href="services.html" class="text-sm text-gray-300 py-3 border-b border-white/5">Услуги</a>
-        <a href="clients.html" class="text-sm text-gray-300 py-3 border-b border-white/5">Клиенты</a>
-        <a href="contacts.html" class="text-sm text-gray-300 py-3 border-b border-white/5">Контакты</a>
-        <a href="tel:+998901234567" class="text-sm font-semibold text-accent py-3">+998 90 123 45 67</a>
+      <div
+        id="mobNav"
+        class="md:hidden bg-dark-800/95 backdrop-blur-xl border-t border-white/5 px-5 flex flex-col gap-1"
+      >
+        <a
+          href="fleet.html"
+          class="text-sm text-gray-300 py-3 border-b border-white/5"
+          >Автопарк</a
+        >
+        <a
+          href="services.html"
+          class="text-sm text-gray-300 py-3 border-b border-white/5"
+          >Услуги</a
+        >
+        <a
+          href="clients.html"
+          class="text-sm text-gray-300 py-3 border-b border-white/5"
+          >Клиенты</a
+        >
+        <a
+          href="contacts.html"
+          class="text-sm text-gray-300 py-3 border-b border-white/5"
+          >Контакты</a
+        >
+        <a
+          href="tel:+998901234567"
+          class="text-sm font-semibold text-accent py-3"
+          >+998 90 123 45 67</a
+        >
       </div>
     </nav>
 
     <!-- HERO -->
-    <section class="relative min-h-[92svh] sm:min-h-[100svh] flex items-center justify-center overflow-hidden" style="margin-top:72px;">
+    <section
+      class="relative min-h-[92svh] sm:min-h-[100svh] flex items-center justify-center overflow-hidden"
+      style="margin-top: 72px"
+    >
       <!-- Dark base -->
-      <div class="absolute inset-0" style="background: radial-gradient(ellipse at 50% 40%, #1a0a0a 0%, #0a0a0f 70%);"></div>
+      <div
+        class="absolute inset-0"
+        style="
+          background: radial-gradient(
+            ellipse at 50% 40%,
+            #1a0a0a 0%,
+            #0a0a0f 70%
+          );
+        "
+      ></div>
       <!-- Background image layer -->
-      <img src="./imgs/hero/hero_rasm.jfif" alt="" class="absolute inset-0 w-full h-full object-cover opacity-60" />
+      <img
+        src="./imgs/hero/hero_rasm.jfif"
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover opacity-60"
+      />
       <!-- Fire/smoke effects - covering entire hero -->
       <div class="absolute inset-0 pointer-events-none">
         <!-- Full coverage base warm tone -->
         <div class="absolute inset-0 bg-[#1a0800]/40"></div>
         <!-- Large top cloud -->
-        <div class="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[120%] h-[60%] bg-[#d4511e]/25 rounded-full blur-[120px]"></div>
+        <div
+          class="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[120%] h-[60%] bg-[#d4511e]/25 rounded-full blur-[120px]"
+        ></div>
         <!-- Full width mid cloud -->
-        <div class="absolute top-[20%] left-0 w-full h-[50%] bg-[#a0370f]/18 rounded-full blur-[150px]"></div>
+        <div
+          class="absolute top-[20%] left-0 w-full h-[50%] bg-[#a0370f]/18 rounded-full blur-[150px]"
+        ></div>
         <!-- Left fire column -->
-        <div class="absolute top-0 left-0 w-[50%] h-full bg-[#e8621c]/12 rounded-full blur-[120px]"></div>
+        <div
+          class="absolute top-0 left-0 w-[50%] h-full bg-[#e8621c]/12 rounded-full blur-[120px]"
+        ></div>
         <!-- Right fire column -->
-        <div class="absolute top-0 right-0 w-[50%] h-full bg-[#d4511e]/12 rounded-full blur-[120px]"></div>
+        <div
+          class="absolute top-0 right-0 w-[50%] h-full bg-[#d4511e]/12 rounded-full blur-[120px]"
+        ></div>
         <!-- Center intense glow -->
-        <div class="absolute top-[10%] left-1/2 -translate-x-1/2 w-[80%] h-[70%] bg-[#ff6b35]/15 rounded-full blur-[130px]"></div>
+        <div
+          class="absolute top-[10%] left-1/2 -translate-x-1/2 w-[80%] h-[70%] bg-[#ff6b35]/15 rounded-full blur-[130px]"
+        ></div>
         <!-- Bottom warm spread -->
-        <div class="absolute bottom-[10%] left-0 w-full h-[40%] bg-[#a0370f]/15 rounded-full blur-[100px]"></div>
+        <div
+          class="absolute bottom-[10%] left-0 w-full h-[40%] bg-[#a0370f]/15 rounded-full blur-[100px]"
+        ></div>
         <!-- Scattered embers -->
-        <div class="absolute top-[5%] left-[15%] w-[250px] h-[300px] bg-[#ff8c42]/22 rounded-full blur-[60px]"></div>
-        <div class="absolute top-[5%] right-[15%] w-[250px] h-[300px] bg-[#ff6b35]/20 rounded-full blur-[60px]"></div>
-        <div class="absolute bottom-[25%] left-[20%] w-[300px] h-[250px] bg-[#d4511e]/15 rounded-full blur-[70px]"></div>
-        <div class="absolute bottom-[25%] right-[20%] w-[300px] h-[250px] bg-[#e8621c]/14 rounded-full blur-[70px]"></div>
+        <div
+          class="absolute top-[5%] left-[15%] w-[250px] h-[300px] bg-[#ff8c42]/22 rounded-full blur-[60px]"
+        ></div>
+        <div
+          class="absolute top-[5%] right-[15%] w-[250px] h-[300px] bg-[#ff6b35]/20 rounded-full blur-[60px]"
+        ></div>
+        <div
+          class="absolute bottom-[25%] left-[20%] w-[300px] h-[250px] bg-[#d4511e]/15 rounded-full blur-[70px]"
+        ></div>
+        <div
+          class="absolute bottom-[25%] right-[20%] w-[300px] h-[250px] bg-[#e8621c]/14 rounded-full blur-[70px]"
+        ></div>
         <!-- Corner fills -->
-        <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-[#2a1510]/50 rounded-full blur-[80px]"></div>
-        <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-[#2a1510]/50 rounded-full blur-[80px]"></div>
-        <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#1a0a05]/60 rounded-full blur-[80px]"></div>
-        <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#1a0a05]/60 rounded-full blur-[80px]"></div>
+        <div
+          class="absolute top-0 left-0 w-[400px] h-[400px] bg-[#2a1510]/50 rounded-full blur-[80px]"
+        ></div>
+        <div
+          class="absolute top-0 right-0 w-[400px] h-[400px] bg-[#2a1510]/50 rounded-full blur-[80px]"
+        ></div>
+        <div
+          class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#1a0a05]/60 rounded-full blur-[80px]"
+        ></div>
+        <div
+          class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#1a0a05]/60 rounded-full blur-[80px]"
+        ></div>
       </div>
       <!-- Floor -->
-      <div class="absolute bottom-0 left-0 right-0 h-[35%] pointer-events-none" style="background: linear-gradient(to top, #0a0a0f 0%, #0f0808 40%, transparent 100%);"></div>
-      <div class="absolute bottom-[12%] left-1/2 -translate-x-1/2 w-[600px] h-[8px] bg-[#d4511e]/20 blur-[20px] rounded-full pointer-events-none"></div>
-      <div class="absolute bottom-[10%] left-1/2 -translate-x-1/2 w-[400px] h-[4px] bg-[#ff8c42]/15 blur-[12px] rounded-full pointer-events-none"></div>
+      <div
+        class="absolute bottom-0 left-0 right-0 h-[35%] pointer-events-none"
+        style="
+          background: linear-gradient(
+            to top,
+            #0a0a0f 0%,
+            #0f0808 40%,
+            transparent 100%
+          );
+        "
+      ></div>
+      <div
+        class="absolute bottom-[12%] left-1/2 -translate-x-1/2 w-[600px] h-[8px] bg-[#d4511e]/20 blur-[20px] rounded-full pointer-events-none"
+      ></div>
+      <div
+        class="absolute bottom-[10%] left-1/2 -translate-x-1/2 w-[400px] h-[4px] bg-[#ff8c42]/15 blur-[12px] rounded-full pointer-events-none"
+      ></div>
       <!-- Vignette -->
-      <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(10,10,15,0.8) 100%);"></div>
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="
+          background: radial-gradient(
+            ellipse at 50% 50%,
+            transparent 30%,
+            rgba(10, 10, 15, 0.8) 100%
+          );
+        "
+      ></div>
 
       <!-- Container for all content -->
-      <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
+      <div
+        class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 sm:py-10"
+      >
         <!-- Big brand text behind - positioned higher, above car -->
-        <div class="absolute -top-4 sm:-top-12 md:-top-16 left-0 right-0 flex justify-center pointer-events-none select-none z-[5]">
-          <h2 class="font-heading text-[60px] sm:text-[120px] md:text-[180px] lg:text-[240px] font-bold text-white/[.04] tracking-tighter whitespace-nowrap" style="text-shadow: 0 0 80px rgba(255,140,66,0.05);">ARTRANS</h2>
+        <div
+          class="absolute -top-4 sm:-top-12 md:-top-16 left-0 right-0 flex justify-center pointer-events-none select-none z-[5]"
+        >
+          <h2
+            class="font-heading text-[60px] sm:text-[120px] md:text-[180px] lg:text-[240px] font-bold text-white/[.04] tracking-tighter whitespace-nowrap"
+            style="text-shadow: 0 0 80px rgba(255, 140, 66, 0.05)"
+          >
+            ARTRANS
+          </h2>
         </div>
 
         <!-- Car image -->
-        <div class="flex justify-center mb-6 sm:mb-10 relative z-10 mt-10 sm:mt-20">
-          <img src="./imgs/hero_bg.webp" alt="ARTRANS" class="w-full max-w-[320px] sm:max-w-2xl md:max-w-[850px] h-auto object-contain" style="filter: drop-shadow(0 30px 60px rgba(212,81,30,0.4)) drop-shadow(0 0 100px rgba(212,81,30,0.15));" />
+        <div
+          class="flex justify-center mb-6 sm:mb-10 relative z-10 mt-10 sm:mt-20"
+        >
+          <img
+            src="./imgs/hero_bg.webp"
+            alt="ARTRANS"
+            class="w-full max-w-[320px] sm:max-w-2xl md:max-w-[850px] h-auto object-contain"
+            style="
+              filter: drop-shadow(0 30px 60px rgba(212, 81, 30, 0.4))
+                drop-shadow(0 0 100px rgba(212, 81, 30, 0.15));
+            "
+          />
         </div>
 
         <!-- Mobile: Title text -->
         <div class="sm:hidden text-center mb-5">
-          <h1 class="font-heading text-2xl font-bold text-white mb-2">Перевозки по всему<br/><span class="text-accent">Узбекистану</span></h1>
-          <p class="text-xs text-gray-400 leading-relaxed">Автопарк из 30+ машин — от седанов до автобусов</p>
+          <h1 class="font-heading text-2xl font-bold text-white mb-2">
+            Перевозки по всему<br /><span class="text-accent">Узбекистану</span>
+          </h1>
+          <p class="text-xs text-gray-400 leading-relaxed">
+            Автопарк из 30+ машин — от седанов до автобусов
+          </p>
         </div>
 
         <!-- Stats + CTA row -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6"
+        >
           <!-- Left stats -->
           <div class="hidden sm:flex gap-8">
             <div>
-              <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Автопарк</p>
-              <p class="text-white font-heading font-bold text-lg">30+ единиц</p>
+              <p
+                class="text-[11px] text-gray-500 uppercase tracking-wider font-medium"
+              >
+                Автопарк
+              </p>
+              <p class="text-white font-heading font-bold text-lg">
+                30+ единиц
+              </p>
               <p class="text-xs text-gray-500">Седаны, минивэны, автобусы</p>
             </div>
             <div>
-              <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Опыт</p>
+              <p
+                class="text-[11px] text-gray-500 uppercase tracking-wider font-medium"
+              >
+                Опыт
+              </p>
               <p class="text-white font-heading font-bold text-lg">8 лет</p>
               <p class="text-xs text-gray-500">на рынке перевозок</p>
             </div>
@@ -162,22 +441,43 @@
 
           <!-- Center CTA -->
           <div class="text-center">
-            <p class="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4 max-w-md hidden sm:block">Полный спектр транспортных услуг для бизнеса, туризма и частных клиентов</p>
+            <p
+              class="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4 max-w-md hidden sm:block"
+            >
+              Полный спектр транспортных услуг для бизнеса, туризма и частных
+              клиентов
+            </p>
             <div class="flex gap-2.5 sm:gap-3 justify-center flex-wrap">
-              <a href="fleet.html" class="bg-accent hover:bg-[#c73e54] text-white px-5 sm:px-7 py-3 sm:py-3.5 rounded-full text-[13px] sm:text-sm font-semibold transition-all hover:shadow-xl hover:shadow-accent/25 hover:-translate-y-0.5">Выбрать автомобиль</a>
-              <a href="tel:+998901234567" class="bg-white/[.08] hover:bg-white/[.14] backdrop-blur-md text-white border border-white/[.12] px-5 sm:px-7 py-3 sm:py-3.5 rounded-full text-[13px] sm:text-sm font-medium transition-all hover:-translate-y-0.5">Оставить заявку</a>
+              <a
+                href="fleet.html"
+                class="bg-accent hover:bg-[#c73e54] text-white px-5 sm:px-7 py-3 sm:py-3.5 rounded-full text-[13px] sm:text-sm font-semibold transition-all hover:shadow-xl hover:shadow-accent/25 hover:-translate-y-0.5"
+                >Выбрать автомобиль</a
+              >
+              <a
+                href="tel:+998901234567"
+                class="bg-white/[.08] hover:bg-white/[.14] backdrop-blur-md text-white border border-white/[.12] px-5 sm:px-7 py-3 sm:py-3.5 rounded-full text-[13px] sm:text-sm font-medium transition-all hover:-translate-y-0.5"
+                >Оставить заявку</a
+              >
             </div>
           </div>
 
           <!-- Right stats -->
           <div class="hidden sm:flex gap-8 text-right">
             <div>
-              <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Клиенты</p>
+              <p
+                class="text-[11px] text-gray-500 uppercase tracking-wider font-medium"
+              >
+                Клиенты
+              </p>
               <p class="text-white font-heading font-bold text-lg">500+</p>
               <p class="text-xs text-gray-500">довольных клиентов</p>
             </div>
             <div>
-              <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Поддержка</p>
+              <p
+                class="text-[11px] text-gray-500 uppercase tracking-wider font-medium"
+              >
+                Поддержка
+              </p>
               <p class="text-white font-heading font-bold text-lg">24/7</p>
               <p class="text-xs text-gray-500">диспетчер на связи</p>
             </div>
@@ -186,11 +486,29 @@
 
         <!-- Mobile stats -->
         <div class="sm:hidden mt-5">
-          <div class="grid grid-cols-4 bg-dark-800/60 backdrop-blur-xl border border-white/[.08] rounded-xl">
-            <div class="text-center px-1.5 py-2.5"><span class="text-sm font-bold text-white">30+</span><span class="block text-[8px] text-white/40 mt-0.5">техники</span></div>
-            <div class="border-l border-white/[.06] text-center px-1.5 py-2.5"><span class="text-sm font-bold text-white">8 лет</span><span class="block text-[8px] text-white/40 mt-0.5">рынок</span></div>
-            <div class="border-l border-white/[.06] text-center px-1.5 py-2.5"><span class="text-sm font-bold text-white">500+</span><span class="block text-[8px] text-white/40 mt-0.5">клиентов</span></div>
-            <div class="border-l border-white/[.06] text-center px-1.5 py-2.5"><span class="text-sm font-bold text-white">24/7</span><span class="block text-[8px] text-white/40 mt-0.5">связь</span></div>
+          <div
+            class="grid grid-cols-4 bg-dark-800/60 backdrop-blur-xl border border-white/[.08] rounded-xl"
+          >
+            <div class="text-center px-1.5 py-2.5">
+              <span class="text-sm font-bold text-white">30+</span
+              ><span class="block text-[8px] text-white/40 mt-0.5"
+                >техники</span
+              >
+            </div>
+            <div class="border-l border-white/[.06] text-center px-1.5 py-2.5">
+              <span class="text-sm font-bold text-white">8 лет</span
+              ><span class="block text-[8px] text-white/40 mt-0.5">рынок</span>
+            </div>
+            <div class="border-l border-white/[.06] text-center px-1.5 py-2.5">
+              <span class="text-sm font-bold text-white">500+</span
+              ><span class="block text-[8px] text-white/40 mt-0.5"
+                >клиентов</span
+              >
+            </div>
+            <div class="border-l border-white/[.06] text-center px-1.5 py-2.5">
+              <span class="text-sm font-bold text-white">24/7</span
+              ><span class="block text-[8px] text-white/40 mt-0.5">связь</span>
+            </div>
           </div>
         </div>
       </div>
@@ -199,78 +517,175 @@
     <!-- FLEET -->
     <section id="fleet" class="py-12 md:py-20 px-4 sm:px-5">
       <div class="max-w-6xl mx-auto reveal">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-10">
+        <div
+          class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-10"
+        >
           <div>
-            <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">АВТОПАРК · <span id="fleetCount"></span></p>
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white mb-2">Подберём автомобиль под формат поездки.</h2>
+            <p
+              class="text-xs text-accent font-semibold uppercase tracking-wider mb-2"
+            >
+              АВТОПАРК · <span id="fleetCount"></span>
+            </p>
+            <h2
+              class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white mb-2"
+            >
+              Подберём автомобиль под формат поездки.
+            </h2>
           </div>
         </div>
-        <div class="flex gap-1.5 flex-wrap overflow-x-auto stats-scroll pb-4" id="tabs"></div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5" id="grid"></div>
+        <div
+          class="flex gap-1.5 flex-wrap overflow-x-auto stats-scroll pb-4"
+          id="tabs"
+        ></div>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"
+          id="grid"
+        ></div>
       </div>
     </section>
 
     <!-- SERVICES -->
     <section id="services" class="bg-dark-800 py-16 md:py-28 px-4 sm:px-5">
       <div class="max-w-6xl mx-auto reveal">
-        <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">УСЛУГИ · 08 НАПРАВЛЕНИЙ</p>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white mb-3">От одного трансфера<br/>до сопровождения делегации.</h2>
-        <p class="text-gray-500 text-sm sm:text-[15px] mb-8 md:mb-10 max-w-md">Полный спектр транспортных услуг для бизнеса, туризма и частных клиентов</p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6" id="svcGrid"></div>
+        <p
+          class="text-xs text-accent font-semibold uppercase tracking-wider mb-2"
+        >
+          УСЛУГИ · 08 НАПРАВЛЕНИЙ
+        </p>
+        <h2
+          class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white mb-3"
+        >
+          От одного трансфера<br />до сопровождения делегации.
+        </h2>
+        <p class="text-gray-500 text-sm sm:text-[15px] mb-8 md:mb-10 max-w-md">
+          Полный спектр транспортных услуг для бизнеса, туризма и частных
+          клиентов
+        </p>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6"
+          id="svcGrid"
+        ></div>
       </div>
     </section>
 
     <!-- CLIENTS -->
     <section id="clients" class="py-16 md:py-28 px-4 sm:px-5">
       <div class="max-w-6xl mx-auto reveal">
-        <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">НАМ ДОВЕРЯЮТ</p>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white mb-3">Мы предоставляли им услуги</h2>
-        <p class="text-gray-500 text-sm sm:text-[15px] mb-8 md:mb-10">Компании и организации, которые нам доверяют</p>
+        <p
+          class="text-xs text-accent font-semibold uppercase tracking-wider mb-2"
+        >
+          НАМ ДОВЕРЯЮТ
+        </p>
+        <h2
+          class="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white mb-3"
+        >
+          Мы предоставляли им услуги
+        </h2>
+        <p class="text-gray-500 text-sm sm:text-[15px] mb-8 md:mb-10">
+          Компании и организации, которые нам доверяют
+        </p>
         <div id="clientsList"></div>
       </div>
     </section>
 
     <!-- CTA -->
     <section class="px-4 sm:px-5 pb-16 md:pb-20">
-      <div class="max-w-6xl mx-auto bg-gradient-to-r from-dark-600 to-dark-700 border border-white/5 rounded-2xl sm:rounded-3xl p-8 sm:p-10 md:p-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 reveal">
+      <div
+        class="max-w-6xl mx-auto bg-gradient-to-r from-dark-600 to-dark-700 border border-white/5 rounded-2xl sm:rounded-3xl p-8 sm:p-10 md:p-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 reveal"
+      >
         <div>
-          <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">КОНСЬЕРЖ-СЕРВИС</p>
-          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight mb-2">Расскажите маршрут.<br/>Подготовим остальное.</h2>
-          <p class="text-gray-500 text-sm sm:text-[15px]">Ответ от менеджера — в течение 15 минут.</p>
+          <p
+            class="text-xs text-accent font-semibold uppercase tracking-wider mb-2"
+          >
+            КОНСЬЕРЖ-СЕРВИС
+          </p>
+          <h2
+            class="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight mb-2"
+          >
+            Расскажите маршрут.<br />Подготовим остальное.
+          </h2>
+          <p class="text-gray-500 text-sm sm:text-[15px]">
+            Ответ от менеджера — в течение 15 минут.
+          </p>
         </div>
         <div class="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
-          <a href="tel:+998901234567" class="bg-accent text-white px-6 py-3.5 rounded-full text-sm font-bold hover:bg-[#c73e54] transition-colors text-center whitespace-nowrap">+998 90 123 45 67</a>
-          <a href="https://t.me/" class="bg-white/[.06] text-white border border-white/10 px-6 py-3.5 rounded-full text-sm font-medium hover:bg-white/[.1] transition-colors text-center whitespace-nowrap">Telegram</a>
+          <a
+            href="tel:+998901234567"
+            class="bg-accent text-white px-6 py-3.5 rounded-full text-sm font-bold hover:bg-[#c73e54] transition-colors text-center whitespace-nowrap"
+            >+998 90 123 45 67</a
+          >
+          <a
+            href="https://t.me/"
+            class="bg-white/[.06] text-white border border-white/10 px-6 py-3.5 rounded-full text-sm font-medium hover:bg-white/[.1] transition-colors text-center whitespace-nowrap"
+            >Telegram</a
+          >
         </div>
       </div>
     </section>
 
     <!-- FOOTER -->
-    <footer id="contact" class="bg-dark-800 border-t border-white/5 text-gray-500 pt-12 md:pt-14 pb-8 px-4 sm:px-5">
-      <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-10">
+    <footer
+      id="contact"
+      class="bg-dark-800 border-t border-white/5 text-gray-500 pt-12 md:pt-14 pb-8 px-4 sm:px-5"
+    >
+      <div
+        class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-10"
+      >
         <div class="col-span-2">
           <div class="flex items-center gap-2.5 mb-4">
-            <img src="./imgs/favicon.png" alt="ARTRANS" class="h-8 w-8 rounded-lg object-cover" />
-            <span class="font-heading font-bold text-white text-base tracking-tight">ARTRANS</span>
+            <img
+              src="./imgs/favicon.png"
+              alt="ARTRANS"
+              class="h-8 w-8 rounded-lg object-cover"
+            />
+            <span
+              class="font-heading font-bold text-white text-base tracking-tight"
+              >ARTRANS</span
+            >
           </div>
-          <p class="text-sm leading-relaxed max-w-xs">Транспортные услуги для бизнеса, туризма и частных клиентов. Ташкент и весь Узбекистан.</p>
+          <p class="text-sm leading-relaxed max-w-xs">
+            Транспортные услуги для бизнеса, туризма и частных клиентов. Ташкент
+            и весь Узбекистан.
+          </p>
         </div>
         <div>
-          <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Контакты</h4>
-          <div class="text-sm space-y-2"><p>г. Ташкент, Узбекистан</p><p>+998 90 123 45 67</p><p>info@artrans.uz</p></div>
+          <h4
+            class="text-white text-xs font-semibold uppercase tracking-wider mb-4"
+          >
+            Контакты
+          </h4>
+          <div class="text-sm space-y-2">
+            <p>г. Ташкент, Узбекистан</p>
+            <p>+998 90 123 45 67</p>
+            <p>info@artrans.uz</p>
+          </div>
         </div>
         <div>
-          <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Часы работы</h4>
-          <div class="text-sm space-y-2"><p>Пн — Сб: 08:00 – 20:00</p><p>Вс: по запросу</p><p>Диспетчер: круглосуточно</p></div>
+          <h4
+            class="text-white text-xs font-semibold uppercase tracking-wider mb-4"
+          >
+            Часы работы
+          </h4>
+          <div class="text-sm space-y-2">
+            <p>Пн — Сб: 08:00 – 20:00</p>
+            <p>Вс: по запросу</p>
+            <p>Диспетчер: круглосуточно</p>
+          </div>
         </div>
       </div>
-      <div class="max-w-6xl mx-auto pt-6 border-t border-white/[.04] text-xs text-center text-gray-600">&copy; 2026 ARTRANS</div>
+      <div
+        class="max-w-6xl mx-auto pt-6 border-t border-white/[.04] text-xs text-center text-gray-600"
+      >
+        &copy; 2026 ARTRANS
+      </div>
     </footer>
 
     <script src="app.js"></script>
     <script>
-      window.addEventListener("scroll", function() {
-        document.getElementById("mainNav").classList.toggle("scrolled", window.scrollY > 10);
+      window.addEventListener("scroll", function () {
+        document
+          .getElementById("mainNav")
+          .classList.toggle("scrolled", window.scrollY > 10);
       });
       function toggleMenu() {
         var menu = document.getElementById("mobNav");
@@ -285,10 +700,20 @@
       }
 
       var revealEls = document.querySelectorAll(".reveal");
-      var revealObs = new IntersectionObserver(function(entries) {
-        entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add("visible"); revealObs.unobserve(e.target); } });
-      }, { threshold: 0.1 });
-      revealEls.forEach(function(el) { revealObs.observe(el); });
+      var revealObs = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              e.target.classList.add("visible");
+              revealObs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+      revealEls.forEach(function (el) {
+        revealObs.observe(el);
+      });
     </script>
   </body>
 </html>
