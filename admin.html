@@ -481,8 +481,8 @@ async function loadOrders(page) {
   var data = await res.json();
   var orders = data.results || data || [];
   var totalCount = data.count || orders.length;
-  var pageSize = 10;
-  var totalPages = Math.ceil(totalCount / pageSize);
+  var pageSize = data.page_size || (orders.length > 0 ? orders.length : 10);
+  var totalPages = data.total_pages || Math.ceil(totalCount / pageSize);
   if (orders.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Буюртмалар йўқ</div>'; return; }
 
   var rows = orders.map(function(o) {
@@ -553,8 +553,8 @@ async function loadVehiclesAdmin(page) {
   var data = await res.json();
   var items = data.results || data || [];
   var totalCount = data.count || items.length;
-  var pageSize = 10;
-  var totalPages = Math.ceil(totalCount / pageSize);
+  var pageSize = data.page_size || (items.length > 0 ? items.length : 10);
+  var totalPages = data.total_pages || Math.ceil(totalCount / pageSize);
   if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Машиналар йўқ</div>'; return; }
 
   var rows = items.map(function(v) {
@@ -860,8 +860,8 @@ async function loadServicesAdmin(page) {
   var data = await res.json();
   var items = data.results || data || [];
   var totalCount = data.count || items.length;
-  var pageSize = 10;
-  var totalPages = Math.ceil(totalCount / pageSize);
+  var pageSize = data.page_size || (items.length > 0 ? items.length : 10);
+  var totalPages = data.total_pages || Math.ceil(totalCount / pageSize);
   if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Хизматлар йўқ</div>'; return; }
   var rows = items.map(function(s) {
     return '<tr ' + trClass() + '>' + td(s.id) + tdBold(s.title || s.name || "-") + td(s.slug || "-") +
@@ -950,8 +950,8 @@ async function loadClientsAdmin(page) {
   var data = await res.json();
   var items = data.results || data || [];
   var totalCount = data.count || items.length;
-  var pageSize = 10;
-  var totalPages = Math.ceil(totalCount / pageSize);
+  var pageSize = data.page_size || (items.length > 0 ? items.length : 10);
+  var totalPages = data.total_pages || Math.ceil(totalCount / pageSize);
   if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Мижозлар йўқ</div>'; return; }
 
   var cards = items.map(function(c) {
