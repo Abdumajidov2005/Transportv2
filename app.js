@@ -29,6 +29,10 @@ function getResults(data) {
 function loadCategories() {
   return apiFetch("/fleet/categories/").then(function (data) {
     categories = getResults(data);
+    // id bo'yicha tartiblash (admin paneldagi kabi)
+    categories.sort(function(a, b) {
+      return (a.id || 0) - (b.id || 0);
+    });
     if (categories.length > 0 && !activeCat) {
       activeCat = categories[0].slug;
     }
