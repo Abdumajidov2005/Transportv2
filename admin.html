@@ -311,7 +311,7 @@ var API = "https://api.artrans.uz";
 var tokens = JSON.parse(localStorage.getItem("artrans_tokens") || "null");
 
 var INPUT = 'w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent';
-var BTN = 'w-full bg-accent text-white font-semibold py-3 rounded-xl hover:bg-[#c73e54] transition-colors';
+var BTN = 'w-full bg-accent text-white font-semibold py-3 rounded-xl hover:bg-[#c73e54] transition-colors inline-flex items-center justify-center gap-2';
 
 // ─── AUTH ─────────────────────────────────────────────
 function getAccess() { return tokens ? tokens.access : null; }
@@ -528,18 +528,30 @@ async function deleteVehicle(id) {
   });
 }
 
-function showVehicleForm(vehicle) {
+async function showVehicleForm(vehicle) {
   var v = vehicle || {};
   var existingImg = v.main_image || v.image || (v.images && v.images[0] && v.images[0].image) || "";
   if (existingImg && !existingImg.startsWith("http")) existingImg = API + existingImg;
 
+  // Kategoriyalarni yuklash
+  var catOptions = '<option value="">Танланмаган</option>';
+  try {
+    var catRes = await apiFetchAdmin("/fleet/admin/categories/");
+    if (catRes && catRes.ok) {
+      var catData = await catRes.json();
+      var cats = catData.results || catData || [];
+      cats.sort(function(a,b){ return (a.id||0)-(b.id||0); });
+      var currentCatId = v.category_id || (v.category && v.category.id) || '';
+      catOptions = cats.map(function(c) {
+        return '<option value="' + c.id + '"' + (c.id == currentCatId ? ' selected' : '') + '>' + c.name + '</option>';
+      }).join('');
+    }
+  } catch(e) {}
+
   var html = '<form id="vehicleForm" class="space-y-4">' +
 
-    // --- Rasm upload bloki ---
     '<div>' +
     '<label class="text-xs text-gray-500 font-medium block mb-2">Расм</label>' +
-
-    // Preview area
     '<div id="imgPreviewWrap" class="relative rounded-xl overflow-hidden bg-gray-100 border-2 border-dashed border-gray-300 mb-2 flex items-center justify-center" style="height:180px">' +
     (existingImg
       ? '<img id="imgPreview" src="' + existingImg + '" class="w-full h-full object-cover absolute inset-0" /><div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"><span class="text-white text-xs font-medium">Алмаштириш</span></div>'
@@ -550,7 +562,6 @@ function showVehicleForm(vehicle) {
     '<p class="text-[11px] text-gray-400">JPG, PNG, WEBP · Максимум 5MB</p>' +
     '</div>' +
 
-    // --- Asosiy maydonlar ---
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Ном <span class="text-red-400">*</span></label><input name="name" value="' + (v.name || '') + '" required placeholder="Masalan: Mercedes S-Class" class="' + INPUT + '" /></div>' +
     '<div class="grid grid-cols-2 gap-3">' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Йил</label><input name="year" type="number" min="2000" max="2030" value="' + (v.year || '') + '" placeholder="2025" class="' + INPUT + '" /></div>' +
@@ -558,9 +569,10 @@ function showVehicleForm(vehicle) {
     '</div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Нарх</label><input name="price" value="' + (v.price || v.price_per_day || '') + '" placeholder="Цена договорная" class="' + INPUT + '" /></div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Тавсиф</label><textarea name="description" rows="3" placeholder="Автомобиль ҳақида қисқача..." class="' + INPUT + ' resize-none">' + (v.description || '') + '</textarea></div>' +
-    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Категория ID</label><input name="category" type="number" value="' + (v.category_id || (v.category && v.category.id) || '') + '" placeholder="1" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Категория <span class="text-red-400">*</span></label>' +
+    '<select name="category" class="' + INPUT + '">' + catOptions + '</select></div>' +
     '<input type="hidden" name="id" value="' + (v.id || '') + '" />' +
-    '<button type="submit" class="' + BTN + '">' + (v.id ? '💾 Сақлаш' : '➕ Қўшиш') + '</button>' +
+    '<button type="submit" class="' + BTN + '"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/></svg>' + (v.id ? 'Сақлаш' : 'Қўшиш') + '</button>' +
     '</form>';
 
   openModal(v.id ? "Машинани таҳрирлаш" : "Янги машина", html);
@@ -655,7 +667,7 @@ function showCategoryForm(cat) {
     '<div><label class="text-xs text-gray-500 font-medium block mb-2">Иконка <span class="text-red-400">*</span></label>' + iconGrid + '<input type="hidden" name="icon" id="iconInput" value="' + selectedIcon + '" /></div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Тартиб</label><input name="order" type="number" value="' + (c.order != null && c.order !== undefined && c.order !== 0 ? c.order : '') + '" placeholder="1, 2, 3 ..." class="' + INPUT + '" /></div>' +
     '<input type="hidden" name="id" value="' + (c.id || '') + '" />' +
-    '<button type="submit" class="' + BTN + '">' + (c.id ? '💾 Сақлаш' : '➕ Қўшиш') + '</button></form>';
+    '<button type="submit" class="' + BTN + '"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/></svg>' + (c.id ? 'Сақлаш' : 'Қўшиш') + '</button></form>';
   
   openModal(c.id ? "Категорияни таҳрирлаш" : "Янги категория", html);
   document.getElementById("catForm").addEventListener("submit", saveCategory);
@@ -763,7 +775,7 @@ function showServiceForm(svc) {
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Қисқа тавсиф <span class="text-red-400">*</span></label><input name="short_description" value="' + (s.short_description || '') + '" required placeholder="1-2 жумлада қисқача..." class="' + INPUT + '" /></div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Тўлиқ тавсиф</label><textarea name="description" rows="3" placeholder="Хизмат ҳақида батафсил..." class="' + INPUT + ' resize-none">' + (s.description || '') + '</textarea></div>' +
     '<input type="hidden" name="id" value="' + (s.id || '') + '" />' +
-    '<button type="submit" class="' + BTN + '">' + (s.id ? '💾 Сақлаш' : '➕ Қўшиш') + '</button></form>';
+    '<button type="submit" class="' + BTN + '"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/></svg>' + (s.id ? 'Сақлаш' : 'Қўшиш') + '</button></form>';
   openModal(s.id ? "Хизматни таҳрирлаш" : "Янги хизмат", html);
   document.getElementById("svcForm").addEventListener("submit", saveService);
 }
@@ -819,15 +831,26 @@ async function loadClientsAdmin() {
   var data = await res.json();
   var items = data.results || data || [];
   if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Мижозлар йўқ</div>'; return; }
-  var rows = items.map(function(c) {
+
+  var cards = items.map(function(c) {
     var logo = c.logo || c.image || "";
     if (logo && !logo.startsWith("http")) logo = API + logo;
-    return '<tr ' + trClass() + '>' +
-      '<td class="p-4">' + (logo ? '<img src="' + logo + '" class="w-14 h-9 object-contain">' : '<div class="w-14 h-9 bg-gray-100 rounded"></div>') + '</td>' +
-      tdBold(c.name || c.company_name || "-") + td(c.id) +
-      '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editClient(" + c.id + ")") + actionBtn("Ўчириш","red-400","deleteClient(" + c.id + ")") + '</td></tr>';
+    return '<div class="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col gap-3">' +
+      '<div class="flex items-center justify-between">' +
+        '<div class="w-16 h-10 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-center overflow-hidden">' +
+          (logo ? '<img src="' + logo + '" class="max-h-8 max-w-[56px] object-contain">' : '<div class="text-gray-300 text-xs">Лого йўқ</div>') +
+        '</div>' +
+        '<span class="text-[11px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">ID: ' + c.id + '</span>' +
+      '</div>' +
+      '<p class="font-semibold text-gray-900 text-sm">' + (c.name || c.company_name || "-") + '</p>' +
+      '<div class="flex gap-2 pt-2 border-t border-gray-100">' +
+        actionBtn("Таҳрирлаш","accent","editClient(" + c.id + ")") +
+        actionBtn("Ўчириш","red-400","deleteClient(" + c.id + ")") +
+      '</div>' +
+    '</div>';
   }).join("");
-  container.innerHTML = makeTable(["Лого","Ном","ID","Амаллар"], rows);
+
+  container.innerHTML = '<div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">' + cards + '</div>';
 }
 
 function showClientForm(client) {
@@ -849,7 +872,7 @@ function showClientForm(client) {
     '</div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Ном <span class="text-red-400">*</span></label><input name="name" value="' + (c.name || c.company_name || '') + '" required placeholder="Masalan: AKFA Group" class="' + INPUT + '" /></div>' +
     '<input type="hidden" name="id" value="' + (c.id || '') + '" />' +
-    '<button type="submit" class="' + BTN + '">' + (c.id ? '💾 Сақлаш' : '➕ Қўшиш') + '</button></form>';
+    '<button type="submit" class="' + BTN + '"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/></svg>' + (c.id ? 'Сақлаш' : 'Қўшиш') + '</button></form>';
   openModal(c.id ? "Мижозни таҳрирлаш" : "Янги мижоз", html);
   document.getElementById("clientForm").addEventListener("submit", saveClient);
 }
