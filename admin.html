@@ -244,6 +244,32 @@
 </div>
 
 <script>
+// ─── CONFIRM MODAL ────────────────────────────────────
+function confirmDelete(message, onConfirm) {
+  var overlay = document.createElement("div");
+  overlay.className = "fixed inset-0 z-[200] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4";
+  overlay.innerHTML =
+    '<div class="bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-sm p-6">' +
+      '<div class="flex items-center gap-3 mb-4">' +
+        '<div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center shrink-0">' +
+          '<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>' +
+        '</div>' +
+        '<div>' +
+          '<h4 class="font-heading font-bold text-gray-900 text-base">Тасдиқлаш</h4>' +
+          '<p class="text-sm text-gray-500 mt-0.5">' + message + '</p>' +
+        '</div>' +
+      '</div>' +
+      '<div class="flex gap-3 mt-6">' +
+        '<button id="confirmCancel" class="flex-1 bg-gray-100 text-gray-700 font-semibold py-2.5 rounded-xl hover:bg-gray-200 transition-colors text-sm">Бекор</button>' +
+        '<button id="confirmOk" class="flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-xl hover:bg-red-600 transition-colors text-sm">Ўчириш</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(overlay);
+  overlay.querySelector("#confirmCancel").addEventListener("click", function() { overlay.remove(); });
+  overlay.querySelector("#confirmOk").addEventListener("click", function() { overlay.remove(); onConfirm(); });
+  overlay.addEventListener("click", function(e) { if (e.target === overlay) overlay.remove(); });
+}
+
 // ─── TOAST ────────────────────────────────────────────
 function toast(msg, type) {
   // type: 'success' | 'error' | 'info'
@@ -387,7 +413,24 @@ function makeTable(heads, rows) {
 function td(content) { return '<td class="p-4 text-gray-700">' + content + '</td>'; }
 function tdBold(content) { return '<td class="p-4 text-gray-900 font-medium">' + content + '</td>'; }
 function trClass() { return 'class="border-b border-gray-100 hover:bg-gray-50 transition-colors"'; }
-function actionBtn(label, color, onclick) { return '<button onclick="' + onclick + '" class="text-' + color + ' hover:underline text-xs font-medium mr-3">' + label + '</button>'; }
+function actionBtn(label, color, onclick) {
+  var icons = {
+    'Таҳрирлаш': '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/></svg>',
+    'Ўчириш':    '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>',
+    'Кўриш':     '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
+    'Нофаол':    '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>',
+    'Фаол':      '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+  };
+  var bgColors = {
+    'accent':    'bg-accent/10 text-accent hover:bg-accent hover:text-white border-accent/20',
+    'red-400':   'bg-red-50 text-red-500 hover:bg-red-500 hover:text-white border-red-200',
+    'yellow-500':'bg-yellow-50 text-yellow-600 hover:bg-yellow-500 hover:text-white border-yellow-200',
+    'green-500': 'bg-green-50 text-green-600 hover:bg-green-500 hover:text-white border-green-200'
+  };
+  var bg = bgColors[color] || 'bg-gray-100 text-gray-600 hover:bg-gray-200 border-gray-200';
+  var icon = icons[label] || '';
+  return '<button onclick="' + onclick + '" title="' + label + '" class="inline-flex items-center gap-1 ' + bg + ' border text-xs font-medium px-2.5 py-1.5 rounded-lg transition-all">' + icon + '<span>' + label + '</span></button> ';
+}
 
 // ─── ORDERS ───────────────────────────────────────────
 async function loadOrders() {
@@ -439,10 +482,11 @@ async function setOrderStatus(id, status) {
   closeModal(); loadOrders();
 }
 async function deleteOrder(id) {
-  if (!confirm("Буюртмани ўчиришни хоҳлайсизми?")) return;
-  var res = await apiFetchAdmin("/orders/admin/" + id + "/", { method: "DELETE", headers: authHeaders() });
-  if (res && (res.ok || res.status === 204)) { toast("Буюртма ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
-  loadOrders();
+  confirmDelete("Буюртмани ўчиришни хоҳлайсизми?", async function() {
+    var res = await apiFetchAdmin("/orders/admin/" + id + "/", { method: "DELETE", headers: authHeaders() });
+    if (res && (res.ok || res.status === 204)) { toast("Буюртма ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+    loadOrders();
+  });
 }
 
 // ─── VEHICLES ─────────────────────────────────────────
@@ -465,7 +509,7 @@ async function loadVehiclesAdmin() {
       td(v.category_name || (v.category && v.category.name) || "-") +
       td(v.year || "-") +
       '<td class="p-4">' + (active ? '<span class="text-green-600 bg-green-50 text-xs font-semibold px-2.5 py-1 rounded-full">Актив</span>' : '<span class="text-gray-400 bg-gray-100 text-xs font-semibold px-2.5 py-1 rounded-full">Ноактив</span>') + '</td>' +
-      '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editVehicle(" + v.id + ")") + actionBtn(active ? "Ўчириш" : "Ёқиш","yellow-500","toggleVehicle(" + v.id + ")") + actionBtn("Ўчириш","red-400","deleteVehicle(" + v.id + ")") + '</td>' +
+      '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editVehicle(" + v.id + ")") + actionBtn(active ? "Нофаол" : "Фаол", active ? "yellow-500" : "green-500","toggleVehicle(" + v.id + ")") + actionBtn("Ўчириш","red-400","deleteVehicle(" + v.id + ")") + '</td>' +
       '</tr>';
   }).join("");
   container.innerHTML = makeTable(["Расм","Ном","Категория","Йил","Ҳолат","Амаллар"], rows);
@@ -477,10 +521,11 @@ async function toggleVehicle(id) {
   loadVehiclesAdmin();
 }
 async function deleteVehicle(id) {
-  if (!confirm("Машинани ўчиришни хоҳлайсизми?")) return;
-  var res = await apiFetchAdmin("/fleet/admin/vehicles/" + id + "/", { method: "DELETE", headers: authHeaders() });
-  if (res && (res.ok || res.status === 204)) { toast("Машина ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
-  loadVehiclesAdmin();
+  confirmDelete("Машинани ўчиришни хоҳлайсизми?", async function() {
+    var res = await apiFetchAdmin("/fleet/admin/vehicles/" + id + "/", { method: "DELETE", headers: authHeaders() });
+    if (res && (res.ok || res.status === 204)) { toast("Машина ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+    loadVehiclesAdmin();
+  });
 }
 
 function showVehicleForm(vehicle) {
@@ -674,10 +719,11 @@ async function saveCategory(e) {
 }
 
 async function deleteCategory(id) {
-  if (!confirm("Категорияни ўчиришни хоҳлайсизми?")) return;
-  var res = await apiFetchAdmin("/fleet/admin/categories/" + id + "/", { method: "DELETE", headers: authHeaders() });
-  if (res && (res.ok || res.status === 204)) { toast("Категория ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
-  loadCategoriesAdmin();
+  confirmDelete("Категорияни ўчиришни хоҳлайсизми?", async function() {
+    var res = await apiFetchAdmin("/fleet/admin/categories/" + id + "/", { method: "DELETE", headers: authHeaders() });
+    if (res && (res.ok || res.status === 204)) { toast("Категория ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+    loadCategoriesAdmin();
+  });
 }
 
 // ─── SERVICES ─────────────────────────────────────────
@@ -757,10 +803,11 @@ async function saveService(e) {
 }
 
 async function deleteService(id) {
-  if (!confirm("Хизматни ўчиришни хоҳлайсизми?")) return;
-  var res = await apiFetchAdmin("/services/admin/directions/" + id + "/", { method: "DELETE", headers: authHeaders() });
-  if (res && (res.ok || res.status === 204)) { toast("Хизмат ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
-  loadServicesAdmin();
+  confirmDelete("Хизматни ўчиришни хоҳлайсизми?", async function() {
+    var res = await apiFetchAdmin("/services/admin/directions/" + id + "/", { method: "DELETE", headers: authHeaders() });
+    if (res && (res.ok || res.status === 204)) { toast("Хизмат ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+    loadServicesAdmin();
+  });
 }
 
 // ─── CLIENTS ──────────────────────────────────────────
@@ -838,10 +885,11 @@ async function saveClient(e) {
 }
 
 async function deleteClient(id) {
-  if (!confirm("Мижозни ўчиришни хоҳлайсизми?")) return;
-  var res = await apiFetchAdmin("/clients/admin/list/" + id + "/", { method: "DELETE", headers: authHeaders() });
-  if (res && (res.ok || res.status === 204)) { toast("Мижоз ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
-  loadClientsAdmin();
+  confirmDelete("Мижозни ўчиришни хоҳлайсизми?", async function() {
+    var res = await apiFetchAdmin("/clients/admin/list/" + id + "/", { method: "DELETE", headers: authHeaders() });
+    if (res && (res.ok || res.status === 204)) { toast("Мижоз ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+    loadClientsAdmin();
+  });
 }
 
 // ─── SETTINGS ─────────────────────────────────────────
