@@ -863,11 +863,24 @@ async function loadServicesAdmin(page) {
   var pageSize = data.page_size || (items.length > 0 ? items.length : 10);
   var totalPages = data.total_pages || Math.ceil(totalCount / pageSize);
   if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Хизматлар йўқ</div>'; return; }
-  var rows = items.map(function(s) {
-    return '<tr ' + trClass() + '>' + td(s.id) + tdBold(s.title || s.name || "-") + td(s.slug || "-") +
-      '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editService(" + s.id + ")") + actionBtn("Ўчириш","red-400","deleteService(" + s.id + ")") + '</td></tr>';
+  var cards = items.map(function(s) {
+    var imgUrl = s.image || s.icon || "";
+    if (imgUrl && !imgUrl.startsWith("http")) imgUrl = API + imgUrl;
+    return '<div class="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col gap-3">' +
+      '<div class="flex items-center justify-between">' +
+        '<div class="w-16 h-10 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-center overflow-hidden">' +
+          (imgUrl ? '<img src="' + imgUrl + '" class="max-h-8 max-w-[56px] object-contain">' : '<div class="text-gray-300 text-xs">Расм йўқ</div>') +
+        '</div>' +
+        '<span class="text-[11px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">ID: ' + s.id + '</span>' +
+      '</div>' +
+      '<p class="font-semibold text-gray-900 text-sm">' + (s.title || s.name || "-") + '</p>' +
+      '<div class="flex gap-2 pt-2 border-t border-gray-100">' +
+        actionBtn("Таҳрирлаш","accent","editService(" + s.id + ")") +
+        actionBtn("Ўчириш","red-400","deleteService(" + s.id + ")") +
+      '</div>' +
+    '</div>';
   }).join("");
-  container.innerHTML = makeTable(["ID","Ном","Slug","Амаллар"], rows) + makePagination(page, totalPages, 'loadServicesAdmin');
+  container.innerHTML = '<div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">' + cards + '</div>' + makePagination(page, totalPages, 'loadServicesAdmin');
 }
 
 function showServiceForm(svc) {
