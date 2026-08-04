@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARTRANS — Админ панель</title>
+  <link rel="icon" type="image/x-icon" href="./imgs/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            accent: "#e94560",
+            dark: { 900: "#f5f5f7", 800: "#eaeaef", 700: "#ffffff", 600: "#e8e8ed", 500: "#d4d4dc", 400: "#c0c0cc" }
+          },
+          fontFamily: {
+            heading: ["Space Grotesk", "system-ui", "sans-serif"],
+            body: ["DM Sans", "system-ui", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: "DM Sans", system-ui, sans-serif; }
+    h1,h2,h3,h4,h5,h6 { font-family: "Space Grotesk", system-ui, sans-serif; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f5f5f7; }
+    ::-webkit-scrollbar-thumb { background: #b0b0b8; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #e94560; }
+    * { scrollbar-width: thin; scrollbar-color: #b0b0b8 #f5f5f7; }
+    .nav-btn.active { background: #fde8ec; color: #e94560; }
+  </style>
+</head>
+<body class="bg-dark-900 text-gray-700 min-h-screen">
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="min-h-screen flex items-center justify-center px-4" style="background: radial-gradient(ellipse at 50% 40%, #e8e8ed 0%, #f5f5f7 70%);">
+  <div class="w-full max-w-md bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+    <div class="flex items-center gap-3 mb-8 justify-center">
+      <img src="./imgs/favicon.png" alt="ARTRANS" class="h-10 w-10 rounded-xl shadow" />
+      <span class="font-heading font-bold text-xl text-gray-900">ARTRANS</span>
+    </div>
+    <h2 class="font-heading text-2xl font-bold text-gray-900 text-center mb-2">Админ панель</h2>
+    <p class="text-gray-500 text-sm text-center mb-8">Тизимга кириш</p>
+    <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-500 text-sm rounded-xl px-4 py-3 mb-4"></div>
+    <div class="space-y-4">
+      <div>
+        <label class="text-xs text-gray-500 mb-1 block font-medium">Логин (username)</label>
+        <input id="loginUser" type="text" placeholder="admin" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent transition-colors" />
+      </div>
+      <div>
+        <label class="text-xs text-gray-500 mb-1 block font-medium">Парол</label>
+        <input id="loginPass" type="password" placeholder="••••••••" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent transition-colors" />
+      </div>
+      <button onclick="doLogin()" class="w-full bg-accent hover:bg-[#c73e54] text-white font-semibold py-3.5 rounded-xl transition-colors">Кириш</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="adminPanel" class="hidden">
+  <!-- Top bar -->
+  <div class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 shadow-sm">
+    <div class="flex items-center gap-3">
+      <button onclick="toggleSidebar()" class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
+        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <img src="./imgs/favicon.png" alt="" class="h-8 w-8 rounded-lg" />
+      <span class="font-heading font-bold text-gray-900">ARTRANS <span class="text-gray-400 font-normal text-sm hidden sm:inline">Admin</span></span>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="index.html" class="text-xs text-gray-500 hover:text-accent transition-colors hidden sm:block">← Сайт</a>
+      <span id="userName" class="text-sm text-gray-500 font-medium hidden sm:block"></span>
+      <button onclick="doLogout()" class="text-xs text-gray-500 hover:text-accent border border-gray-200 px-3 py-1.5 rounded-lg transition-colors">Чиқиш</button>
+    </div>
+  </div>
+
+  <!-- Sidebar overlay mobile -->
+  <div id="sidebarOverlay" onclick="closeSidebar()" class="fixed inset-0 z-30 bg-black/20 hidden md:hidden"></div>
+
+  <div class="flex pt-16">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed left-0 top-16 bottom-0 w-56 bg-white border-r border-gray-200 p-4 overflow-y-auto shadow-sm z-40 -translate-x-full md:translate-x-0 transition-transform duration-300">
+      <nav class="space-y-1">
+        <button onclick="showSection('orders')" data-nav="orders" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all flex items-center gap-3">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Буюртмалар
+        </button>
+        <button onclick="showSection('categories')" data-nav="categories" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all flex items-center gap-3">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+          Категориялар
+        </button>
+        <button onclick="showSection('vehicles')" data-nav="vehicles" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all flex items-center gap-3">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zM3.5 9l1.5-5h14l1.5 5M3.5 9H21M3.5 9l-1 6.5h19L20.5 9"/></svg>
+          Автопарк
+        </button>
+        <button onclick="showSection('services')" data-nav="services" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all flex items-center gap-3">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"/></svg>
+          Хизматлар
+        </button>
+        <button onclick="showSection('clients')" data-nav="clients" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all flex items-center gap-3">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"/></svg>
+          Мижозлар
+        </button>
+        <div class="my-2 border-t border-gray-100"></div>
+        <button onclick="showSection('settings')" data-nav="settings" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all flex items-center gap-3">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Созламалар
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="ml-0 md:ml-56 flex-1 p-4 sm:p-6 min-h-[calc(100vh-4rem)] bg-dark-900">
+
+      <!-- ORDERS -->
+      <section id="sec-orders" class="admin-section hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="font-heading text-2xl font-bold text-gray-900">Буюртмалар</h2>
+          <button onclick="loadOrders()" class="flex items-center gap-2 text-xs bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-gray-600">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Янгилаш
+          </button>
+        </div>
+        <div id="ordersTable" class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          <div class="p-8 text-center text-gray-400">Юкланмоқда...</div>
+        </div>
+      </section>
+
+      <!-- VEHICLES -->
+      <section id="sec-vehicles" class="admin-section hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="font-heading text-2xl font-bold text-gray-900">Автопарк</h2>
+          <div class="flex gap-2">
+            <button onclick="loadVehiclesAdmin()" class="flex items-center gap-2 text-xs bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-gray-600">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Янгилаш
+            </button>
+            <button onclick="showVehicleForm()" class="flex items-center gap-1.5 text-xs bg-accent text-white px-4 py-2 rounded-lg hover:bg-[#c73e54] transition-colors font-semibold">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Қўшиш
+            </button>
+          </div>
+        </div>
+        <div id="vehiclesTable" class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          <div class="p-8 text-center text-gray-400">Юкланмоқда...</div>
+        </div>
+      </section>
+
+      <!-- CATEGORIES -->
+      <section id="sec-categories" class="admin-section hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="font-heading text-2xl font-bold text-gray-900">Категориялар</h2>
+          <div class="flex gap-2">
+            <button onclick="loadCategoriesAdmin()" class="flex items-center gap-2 text-xs bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-gray-600">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Янгилаш
+            </button>
+            <button onclick="showCategoryForm()" class="flex items-center gap-1.5 text-xs bg-accent text-white px-4 py-2 rounded-lg hover:bg-[#c73e54] transition-colors font-semibold">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Қўшиш
+            </button>
+          </div>
+        </div>
+        <div id="categoriesTable" class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          <div class="p-8 text-center text-gray-400">Юкланмоқда...</div>
+        </div>
+      </section>
+
+      <!-- SERVICES -->
+      <section id="sec-services" class="admin-section hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="font-heading text-2xl font-bold text-gray-900">Хизматлар</h2>
+          <div class="flex gap-2">
+            <button onclick="loadServicesAdmin()" class="flex items-center gap-2 text-xs bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-gray-600">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Янгилаш
+            </button>
+            <button onclick="showServiceForm()" class="flex items-center gap-1.5 text-xs bg-accent text-white px-4 py-2 rounded-lg hover:bg-[#c73e54] transition-colors font-semibold">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Қўшиш
+            </button>
+          </div>
+        </div>
+        <div id="servicesTable" class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          <div class="p-8 text-center text-gray-400">Юкланмоқда...</div>
+        </div>
+      </section>
+
+      <!-- CLIENTS -->
+      <section id="sec-clients" class="admin-section hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="font-heading text-2xl font-bold text-gray-900">Мижозлар</h2>
+          <div class="flex gap-2">
+            <button onclick="loadClientsAdmin()" class="flex items-center gap-2 text-xs bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-gray-600">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Янгилаш
+            </button>
+            <button onclick="showClientForm()" class="flex items-center gap-1.5 text-xs bg-accent text-white px-4 py-2 rounded-lg hover:bg-[#c73e54] transition-colors font-semibold">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              Қўшиш
+            </button>
+          </div>
+        </div>
+        <div id="clientsTable" class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+          <div class="p-8 text-center text-gray-400">Юкланмоқда...</div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="sec-settings" class="admin-section hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="font-heading text-2xl font-bold text-gray-900">Сайт созламалари</h2>
+          <button onclick="loadSettingsAdmin()" class="flex items-center gap-2 text-xs bg-white border border-gray-200 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors text-gray-600">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Янгилаш
+          </button>
+        </div>
+        <div id="settingsForm" class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+          <div class="p-8 text-center text-gray-400">Юкланмоқда...</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toastContainer" class="fixed bottom-6 right-6 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/30 backdrop-blur-sm p-2 sm:p-4">
+  <div class="bg-white border border-gray-200 rounded-2xl w-full max-w-lg max-h-[95vh] overflow-y-auto p-5 sm:p-6 shadow-lg">
+    <div class="flex items-center justify-between mb-4">
+      <h3 id="modalTitle" class="font-heading text-lg font-bold text-gray-900"></h3>
+      <button onclick="closeModal()" class="text-gray-400 hover:text-gray-700 text-xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">&times;</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ─── TOAST ────────────────────────────────────────────
+function toast(msg, type) {
+  // type: 'success' | 'error' | 'info'
+  var colors = {
+    success: 'bg-green-500',
+    error:   'bg-red-500',
+    info:    'bg-blue-500'
+  };
+  var icons = {
+    success: '<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>',
+    error:   '<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>',
+    info:    '<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>'
+  };
+  var bg = colors[type] || colors.info;
+  var icon = icons[type] || icons.info;
+
+  var el = document.createElement('div');
+  el.className = 'pointer-events-auto flex items-center gap-3 ' + bg + ' text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg translate-y-4 opacity-0 transition-all duration-300 max-w-xs';
+  el.innerHTML = icon + '<span>' + msg + '</span>';
+
+  var container = document.getElementById('toastContainer');
+  container.appendChild(el);
+
+  // Animate in
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      el.classList.remove('translate-y-4', 'opacity-0');
+    });
+  });
+
+  // Auto remove after 3s
+  setTimeout(function() {
+    el.classList.add('translate-y-4', 'opacity-0');
+    setTimeout(function() { el.remove(); }, 300);
+  }, 3000);
+}
+
+var API = "https://api.artrans.uz";
+var tokens = JSON.parse(localStorage.getItem("artrans_tokens") || "null");
+
+var INPUT = 'w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent';
+var BTN = 'w-full bg-accent text-white font-semibold py-3 rounded-xl hover:bg-[#c73e54] transition-colors';
+
+// ─── AUTH ─────────────────────────────────────────────
+function getAccess() { return tokens ? tokens.access : null; }
+function getRefresh() { return tokens ? tokens.refresh : null; }
+function saveTokens(data) { tokens = data; localStorage.setItem("artrans_tokens", JSON.stringify(data)); }
+function clearTokens() { tokens = null; localStorage.removeItem("artrans_tokens"); }
+function authHeaders() { return { "Authorization": "Bearer " + getAccess(), "Content-Type": "application/json" }; }
+function authHeadersMultipart() { return { "Authorization": "Bearer " + getAccess() }; }
+
+async function refreshToken() {
+  try {
+    var res = await fetch(API + "/auth/refresh/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ refresh: getRefresh() }) });
+    if (!res.ok) throw new Error("Refresh failed");
+    var data = await res.json();
+    tokens.access = data.access;
+    saveTokens(tokens);
+    return true;
+  } catch(e) { clearTokens(); showLogin(); return false; }
+}
+
+async function apiFetchAdmin(url, options) {
+  if (!options) options = {};
+  if (!options.headers) options.headers = authHeaders();
+  var res = await fetch(API + url, options);
+  if (res.status === 401) {
+    var refreshed = await refreshToken();
+    if (refreshed) { options.headers = authHeaders(); res = await fetch(API + url, options); }
+    else return null;
+  }
+  return res;
+}
+
+async function doLogin() {
+  var user = document.getElementById("loginUser").value.trim();
+  var pass = document.getElementById("loginPass").value;
+  var errEl = document.getElementById("loginError");
+  errEl.classList.add("hidden");
+  if (!user || !pass) { errEl.textContent = "Логин ва паролни киритинг"; errEl.classList.remove("hidden"); return; }
+  try {
+    var res = await fetch(API + "/auth/login/", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: user, password: pass }) });
+    if (!res.ok) { var err = await res.json().catch(function() { return {}; }); errEl.textContent = err.detail || "Логин ёки парол нотўғри"; errEl.classList.remove("hidden"); return; }
+    var data = await res.json();
+    saveTokens(data);
+    showAdmin();
+  } catch(e) { errEl.textContent = "Серверга уланиб бўлмади"; errEl.classList.remove("hidden"); }
+}
+
+function doLogout() { clearTokens(); showLogin(); }
+
+// ─── NAVIGATION ───────────────────────────────────────
+function showLogin() {
+  document.getElementById("loginScreen").classList.remove("hidden");
+  document.getElementById("adminPanel").classList.add("hidden");
+}
+
+async function showAdmin() {
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("adminPanel").classList.remove("hidden");
+  try {
+    var res = await apiFetchAdmin("/auth/me/");
+    if (res && res.ok) { var user = await res.json(); document.getElementById("userName").textContent = user.username || user.email || "Admin"; }
+  } catch(e) {}
+  showSection("orders");
+}
+
+function showSection(name) {
+  document.querySelectorAll(".admin-section").forEach(function(el) { el.classList.add("hidden"); });
+  document.getElementById("sec-" + name).classList.remove("hidden");
+  document.querySelectorAll(".nav-btn").forEach(function(btn) { btn.classList.remove("active"); });
+  var activeBtn = document.querySelector('[data-nav="' + name + '"]');
+  if (activeBtn) activeBtn.classList.add("active");
+  // Close sidebar on mobile after selection
+  if (window.innerWidth < 768) closeSidebar();
+  if (name === "orders") loadOrders();
+  if (name === "vehicles") loadVehiclesAdmin();
+  if (name === "categories") loadCategoriesAdmin();
+  if (name === "services") loadServicesAdmin();
+  if (name === "clients") loadClientsAdmin();
+  if (name === "settings") loadSettingsAdmin();
+}
+
+// ─── MODAL ────────────────────────────────────────────
+function openModal(title, bodyHTML) {
+  document.getElementById("modalTitle").textContent = title;
+  document.getElementById("modalBody").innerHTML = bodyHTML;
+  document.getElementById("modal").classList.remove("hidden");
+  document.getElementById("modal").classList.add("flex");
+}
+function closeModal() {
+  document.getElementById("modal").classList.add("hidden");
+  document.getElementById("modal").classList.remove("flex");
+}
+
+// ─── TABLE HELPER ─────────────────────────────────────
+function makeTable(heads, rows) {
+  var th = heads.map(function(h) { return '<th class="text-left p-4 text-xs text-gray-500 font-semibold uppercase tracking-wider">' + h + '</th>'; }).join("");
+  return '<div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-gray-100">' + th + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+function td(content) { return '<td class="p-4 text-gray-700">' + content + '</td>'; }
+function tdBold(content) { return '<td class="p-4 text-gray-900 font-medium">' + content + '</td>'; }
+function trClass() { return 'class="border-b border-gray-100 hover:bg-gray-50 transition-colors"'; }
+function actionBtn(label, color, onclick) { return '<button onclick="' + onclick + '" class="text-' + color + ' hover:underline text-xs font-medium mr-3">' + label + '</button>'; }
+
+// ─── ORDERS ───────────────────────────────────────────
+async function loadOrders() {
+  var container = document.getElementById("ordersTable");
+  container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
+  var res = await apiFetchAdmin("/orders/admin/");
+  if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
+  var data = await res.json();
+  var orders = data.results || data || [];
+  if (orders.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Буюртмалар йўқ</div>'; return; }
+
+  var rows = orders.map(function(o) {
+    var statusClass = o.status === "completed" ? "text-green-600 bg-green-50" : o.status === "cancelled" ? "text-red-500 bg-red-50" : "text-yellow-600 bg-yellow-50";
+    return '<tr ' + trClass() + '>' +
+      td('#' + o.id) +
+      tdBold(o.full_name || o.name || "-") +
+      td(o.phone || o.phone_number || "-") +
+      '<td class="p-4"><span class="' + statusClass + ' text-xs font-semibold px-2.5 py-1 rounded-full">' + (o.status || "new") + '</span></td>' +
+      td(o.created_at ? new Date(o.created_at).toLocaleDateString() : "-") +
+      '<td class="p-4">' + actionBtn("Кўриш","accent","showOrderDetail(" + o.id + ")") + actionBtn("Ўчириш","red-400","deleteOrder(" + o.id + ")") + '</td>' +
+      '</tr>';
+  }).join("");
+  container.innerHTML = makeTable(["ID","Исм","Телефон","Статус","Сана","Амаллар"], rows);
+}
+
+async function showOrderDetail(id) {
+  var res = await apiFetchAdmin("/orders/admin/" + id + "/");
+  if (!res || !res.ok) return;
+  var o = await res.json();
+  var html = '<div class="space-y-3 text-sm">' +
+    '<div class="grid grid-cols-2 gap-3">' +
+    '<div class="bg-gray-50 rounded-xl p-3"><p class="text-xs text-gray-500 mb-1">Исм</p><p class="text-gray-900 font-medium">' + (o.full_name || o.name || "-") + '</p></div>' +
+    '<div class="bg-gray-50 rounded-xl p-3"><p class="text-xs text-gray-500 mb-1">Телефон</p><p class="text-gray-900 font-medium">' + (o.phone || o.phone_number || "-") + '</p></div>' +
+    '<div class="bg-gray-50 rounded-xl p-3"><p class="text-xs text-gray-500 mb-1">Хизмат</p><p class="text-gray-900 font-medium">' + (o.service || o.direction || o.vehicle || "-") + '</p></div>' +
+    '<div class="bg-gray-50 rounded-xl p-3"><p class="text-xs text-gray-500 mb-1">Статус</p><p class="text-gray-900 font-medium">' + (o.status || "new") + '</p></div>' +
+    '</div>' +
+    '<div class="bg-gray-50 rounded-xl p-3"><p class="text-xs text-gray-500 mb-1">Изоҳ</p><p class="text-gray-700">' + (o.comment || o.message || "-") + '</p></div>' +
+    '<div class="flex gap-2 pt-2">' +
+    '<button onclick="setOrderStatus(' + id + ',\'confirmed\')" class="flex-1 bg-green-50 text-green-600 border border-green-200 px-3 py-2 rounded-xl text-xs font-semibold">✓ Тасдиқлаш</button>' +
+    '<button onclick="setOrderStatus(' + id + ',\'completed\')" class="flex-1 bg-blue-50 text-blue-600 border border-blue-200 px-3 py-2 rounded-xl text-xs font-semibold">✓ Тугалланди</button>' +
+    '<button onclick="setOrderStatus(' + id + ',\'cancelled\')" class="flex-1 bg-red-50 text-red-500 border border-red-200 px-3 py-2 rounded-xl text-xs font-semibold">✕ Бекор</button>' +
+    '</div></div>';
+  openModal("Буюртма #" + id, html);
+}
+
+async function setOrderStatus(id, status) {
+  var res = await apiFetchAdmin("/orders/admin/" + id + "/set_status/", { method: "PATCH", headers: authHeaders(), body: JSON.stringify({ status: status }) });
+  if (res && res.ok) { toast("Статус янгиланди", "success"); } else { toast("Хато юз берди", "error"); }
+  closeModal(); loadOrders();
+}
+async function deleteOrder(id) {
+  if (!confirm("Буюртмани ўчиришни хоҳлайсизми?")) return;
+  var res = await apiFetchAdmin("/orders/admin/" + id + "/", { method: "DELETE", headers: authHeaders() });
+  if (res && (res.ok || res.status === 204)) { toast("Буюртма ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+  loadOrders();
+}
+
+// ─── VEHICLES ─────────────────────────────────────────
+async function loadVehiclesAdmin() {
+  var container = document.getElementById("vehiclesTable");
+  container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
+  var res = await apiFetchAdmin("/fleet/admin/vehicles/");
+  if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
+  var data = await res.json();
+  var items = data.results || data || [];
+  if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Машиналар йўқ</div>'; return; }
+
+  var rows = items.map(function(v) {
+    var img = v.main_image || v.image || (v.images && v.images[0] && v.images[0].image) || "";
+    if (img && !img.startsWith("http")) img = API + img;
+    var active = v.is_active !== false;
+    return '<tr ' + trClass() + '>' +
+      '<td class="p-4">' + (img ? '<img src="' + img + '" class="w-16 h-10 object-cover rounded-lg border border-gray-100">' : '<div class="w-16 h-10 bg-gray-100 rounded-lg"></div>') + '</td>' +
+      tdBold(v.name || ((v.brand || "") + " " + (v.model || ""))) +
+      td(v.category_name || (v.category && v.category.name) || "-") +
+      td(v.year || "-") +
+      '<td class="p-4">' + (active ? '<span class="text-green-600 bg-green-50 text-xs font-semibold px-2.5 py-1 rounded-full">Актив</span>' : '<span class="text-gray-400 bg-gray-100 text-xs font-semibold px-2.5 py-1 rounded-full">Ноактив</span>') + '</td>' +
+      '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editVehicle(" + v.id + ")") + actionBtn(active ? "Ўчириш" : "Ёқиш","yellow-500","toggleVehicle(" + v.id + ")") + actionBtn("Ўчириш","red-400","deleteVehicle(" + v.id + ")") + '</td>' +
+      '</tr>';
+  }).join("");
+  container.innerHTML = makeTable(["Расм","Ном","Категория","Йил","Ҳолат","Амаллар"], rows);
+}
+
+async function toggleVehicle(id) {
+  var res = await apiFetchAdmin("/fleet/admin/vehicles/" + id + "/toggle_active/", { method: "PATCH", headers: authHeaders() });
+  if (res && res.ok) { toast("Ҳолат янгиланди", "success"); } else { toast("Хато юз берди", "error"); }
+  loadVehiclesAdmin();
+}
+async function deleteVehicle(id) {
+  if (!confirm("Машинани ўчиришни хоҳлайсизми?")) return;
+  var res = await apiFetchAdmin("/fleet/admin/vehicles/" + id + "/", { method: "DELETE", headers: authHeaders() });
+  if (res && (res.ok || res.status === 204)) { toast("Машина ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+  loadVehiclesAdmin();
+}
+
+function showVehicleForm(vehicle) {
+  var v = vehicle || {};
+  var existingImg = v.main_image || v.image || (v.images && v.images[0] && v.images[0].image) || "";
+  if (existingImg && !existingImg.startsWith("http")) existingImg = API + existingImg;
+
+  var html = '<form id="vehicleForm" class="space-y-4">' +
+
+    // --- Rasm upload bloki ---
+    '<div>' +
+    '<label class="text-xs text-gray-500 font-medium block mb-2">Расм</label>' +
+
+    // Preview area
+    '<div id="imgPreviewWrap" class="relative rounded-xl overflow-hidden bg-gray-100 border-2 border-dashed border-gray-300 mb-2 flex items-center justify-center" style="height:180px">' +
+    (existingImg
+      ? '<img id="imgPreview" src="' + existingImg + '" class="w-full h-full object-cover absolute inset-0" /><div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"><span class="text-white text-xs font-medium">Алмаштириш</span></div>'
+      : '<div id="imgPlaceholder" class="flex flex-col items-center gap-2 text-gray-400 pointer-events-none"><svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg><span class="text-sm">Расм танланмаган</span></div>'
+    ) +
+    '<input type="file" name="image" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="previewImg(this)" />' +
+    '</div>' +
+    '<p class="text-[11px] text-gray-400">JPG, PNG, WEBP · Максимум 5MB</p>' +
+    '</div>' +
+
+    // --- Asosiy maydonlar ---
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Ном <span class="text-red-400">*</span></label><input name="name" value="' + (v.name || '') + '" required placeholder="Masalan: Mercedes S-Class" class="' + INPUT + '" /></div>' +
+    '<div class="grid grid-cols-2 gap-3">' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Йил</label><input name="year" type="number" min="2000" max="2030" value="' + (v.year || '') + '" placeholder="2025" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Ўриндиқлар</label><input name="seats" type="number" min="1" max="60" value="' + (v.seats || v.passenger_count || '') + '" placeholder="4" class="' + INPUT + '" /></div>' +
+    '</div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Нарх</label><input name="price" value="' + (v.price || v.price_per_day || '') + '" placeholder="Цена договорная" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Тавсиф</label><textarea name="description" rows="3" placeholder="Автомобиль ҳақида қисқача..." class="' + INPUT + ' resize-none">' + (v.description || '') + '</textarea></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Категория ID</label><input name="category" type="number" value="' + (v.category_id || (v.category && v.category.id) || '') + '" placeholder="1" class="' + INPUT + '" /></div>' +
+    '<input type="hidden" name="id" value="' + (v.id || '') + '" />' +
+    '<button type="submit" class="' + BTN + '">' + (v.id ? '💾 Сақлаш' : '➕ Қўшиш') + '</button>' +
+    '</form>';
+
+  openModal(v.id ? "Машинани таҳрирлаш" : "Янги машина", html);
+  document.getElementById("vehicleForm").addEventListener("submit", saveVehicle);
+}
+
+async function editVehicle(id) {
+  var res = await apiFetchAdmin("/fleet/admin/vehicles/" + id + "/");
+  if (!res || !res.ok) return;
+  showVehicleForm(await res.json());
+}
+
+async function saveVehicle(e) {
+  e.preventDefault();
+  var form = e.target;
+  var id = form.id.value;
+  var fd = new FormData();
+  fd.append("name", form.name.value);
+  if (form.year.value) fd.append("year", form.year.value);
+  if (form.seats.value) fd.append("seats", form.seats.value);
+  if (form.price.value) fd.append("price", form.price.value);
+  if (form.description.value) fd.append("description", form.description.value);
+  if (form.category.value) fd.append("category", form.category.value);
+  if (form.image.files[0]) fd.append("main_image", form.image.files[0]);
+  var url = id ? "/fleet/admin/vehicles/" + id + "/" : "/fleet/admin/vehicles/";
+  var res = await apiFetchAdmin(url, { method: id ? "PUT" : "POST", headers: authHeadersMultipart(), body: fd });
+  if (res && res.ok) {
+    toast(id ? "Машина янгиланди" : "Машина қўшилди", "success");
+    closeModal(); loadVehiclesAdmin();
+  } else {
+    var errData = await res.json().catch(function() { return {}; });
+    var errMsg = Object.entries(errData).map(function(kv) {
+      return kv[0] + ": " + (Array.isArray(kv[1]) ? kv[1].join(", ") : JSON.stringify(kv[1]));
+    }).join(" | ");
+    toast("Хато: " + (errMsg || res.status), "error");
+    console.error("saveVehicle error:", errData);
+  }
+}
+
+// ─── CATEGORIES ───────────────────────────────────────
+async function loadCategoriesAdmin() {
+  var container = document.getElementById("categoriesTable");
+  container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
+  var res = await apiFetchAdmin("/fleet/admin/categories/");
+  if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
+  var data = await res.json();
+  var items = data.results || data || [];
+  items.sort(function(a, b) { return a.id - b.id; });
+  if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Категориялар йўқ</div>'; return; }
+  var rows = items.map(function(c) {
+    return '<tr ' + trClass() + '>' + td(c.id) + tdBold(c.name || "-") + td(c.slug || "-") +
+      td(c.icon ? '<code class="text-xs bg-gray-100 px-1.5 py-0.5 rounded">' + c.icon + '</code>' : '-') +
+      '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editCategory(" + c.id + ")") + actionBtn("Ўчириш","red-400","deleteCategory(" + c.id + ")") + '</td></tr>';
+  }).join("");
+  container.innerHTML = makeTable(["ID","Ном","Slug","Иконка","Амаллар"], rows);
+}
+
+function showCategoryForm(cat) {
+  var c = cat || {};
+  
+  // Transport icon list
+  var icons = [
+    { class: 'fa-solid fa-car', label: 'Машина' },
+    { class: 'fa-solid fa-car-side', label: 'Седан' },
+    { class: 'fa-solid fa-taxi', label: 'Такси' },
+    { class: 'fa-solid fa-car-rear', label: 'Легковой' },
+    { class: 'fa-solid fa-truck-pickup', label: 'Пикап' },
+    { class: 'fa-solid fa-shuttle-van', label: 'Минивэн' },
+    { class: 'fa-solid fa-van-shuttle', label: 'Шаттл' },
+    { class: 'fa-solid fa-bus', label: 'Автобус' },
+    { class: 'fa-solid fa-bus-simple', label: 'Микроавтобус' },
+    { class: 'fa-solid fa-truck', label: 'Грузовик' },
+    { class: 'fa-solid fa-truck-moving', label: 'Грузоперевозки' },
+    { class: 'fa-solid fa-crown', label: 'VIP' },
+    { class: 'fa-solid fa-gem', label: 'Премиум' },
+    { class: 'fa-solid fa-star', label: 'Популярные' }
+  ];
+  
+  var selectedIcon = c.icon || 'fa-solid fa-car';
+  
+  var iconGrid = '<div class="grid grid-cols-7 gap-2 mb-3">';
+  icons.forEach(function(ic) {
+    var isActive = ic.class === selectedIcon ? 'ring-2 ring-accent bg-accent/10' : 'hover:bg-gray-100';
+    iconGrid += '<button type="button" onclick="selectIcon(this, \'' + ic.class + '\')" class="icon-btn aspect-square flex items-center justify-center border border-gray-200 rounded-lg transition-all ' + isActive + '" title="' + ic.label + '" data-icon="' + ic.class + '">' +
+      '<i class="' + ic.class + ' text-lg text-gray-700"></i></button>';
+  });
+  iconGrid += '</div>';
+  
+  var html = '<form id="catForm" class="space-y-4">' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Ном <span class="text-red-400">*</span></label><input name="name" value="' + (c.name || '') + '" placeholder="Масалан: Седанлар" required class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Slug</label><input name="slug" value="' + (c.slug || '') + '" placeholder="sedan (автоматик)" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-2">Иконка <span class="text-red-400">*</span></label>' + iconGrid + '<input type="hidden" name="icon" id="iconInput" value="' + selectedIcon + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Тартиб</label><input name="order" type="number" value="' + (c.order != null && c.order !== undefined && c.order !== 0 ? c.order : '') + '" placeholder="1, 2, 3 ..." class="' + INPUT + '" /></div>' +
+    '<input type="hidden" name="id" value="' + (c.id || '') + '" />' +
+    '<button type="submit" class="' + BTN + '">' + (c.id ? '💾 Сақлаш' : '➕ Қўшиш') + '</button></form>';
+  
+  openModal(c.id ? "Категорияни таҳрирлаш" : "Янги категория", html);
+  document.getElementById("catForm").addEventListener("submit", saveCategory);
+}
+
+function selectIcon(btn, iconClass) {
+  // Remove active class from all buttons
+  document.querySelectorAll('.icon-btn').forEach(function(b) {
+    b.classList.remove('ring-2', 'ring-accent', 'bg-accent/10');
+    b.classList.add('hover:bg-gray-100');
+  });
+  
+  // Add active class to clicked button
+  btn.classList.add('ring-2', 'ring-accent', 'bg-accent/10');
+  btn.classList.remove('hover:bg-gray-100');
+  
+  // Update hidden input
+  document.getElementById('iconInput').value = iconClass;
+}
+
+async function editCategory(id) {
+  var res = await apiFetchAdmin("/fleet/admin/categories/" + id + "/");
+  if (!res || !res.ok) return;
+  showCategoryForm(await res.json());
+}
+
+async function saveCategory(e) {
+  e.preventDefault();
+  var form = e.target;
+  var id = form.id.value;
+  var body = { name: form.name.value };
+  if (form.slug.value) body.slug = form.slug.value;
+  if (form.icon.value) body.icon = form.icon.value;
+  if (form.order.value !== '') body.order = parseInt(form.order.value);
+
+  try {
+    var res = await apiFetchAdmin(
+      id ? "/fleet/admin/categories/" + id + "/" : "/fleet/admin/categories/",
+      { method: id ? "PUT" : "POST", headers: authHeaders(), body: JSON.stringify(body) }
+    );
+    if (!res || !res.ok) {
+      var error = await res.json().catch(function() { return {}; });
+      var errMsg = "";
+      if (typeof error === "object") {
+        errMsg = Object.entries(error).map(function(kv) {
+          return kv[0] + ": " + (Array.isArray(kv[1]) ? kv[1].join(", ") : JSON.stringify(kv[1]));
+        }).join(" | ");
+      } else {
+        errMsg = String(error);
+      }
+      toast("Хато: " + errMsg, "error");
+      return;
+    }
+    toast(id ? "Категория янгиланди" : "Категория қўшилди", "success");
+    closeModal();
+    loadCategoriesAdmin();
+  } catch(err) {
+    toast("Серверга уланиб бўлмади", "error");
+    console.error(err);
+  }
+}
+
+async function deleteCategory(id) {
+  if (!confirm("Категорияни ўчиришни хоҳлайсизми?")) return;
+  var res = await apiFetchAdmin("/fleet/admin/categories/" + id + "/", { method: "DELETE", headers: authHeaders() });
+  if (res && (res.ok || res.status === 204)) { toast("Категория ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+  loadCategoriesAdmin();
+}
+
+// ─── SERVICES ─────────────────────────────────────────
+async function loadServicesAdmin() {
+  var container = document.getElementById("servicesTable");
+  container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
+  var res = await apiFetchAdmin("/services/admin/directions/");
+  if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
+  var data = await res.json();
+  var items = data.results || data || [];
+  if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Хизматлар йўқ</div>'; return; }
+  var rows = items.map(function(s) {
+    return '<tr ' + trClass() + '>' + td(s.id) + tdBold(s.title || s.name || "-") + td(s.slug || "-") +
+      '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editService(" + s.id + ")") + actionBtn("Ўчириш","red-400","deleteService(" + s.id + ")") + '</td></tr>';
+  }).join("");
+  container.innerHTML = makeTable(["ID","Ном","Slug","Амаллар"], rows);
+}
+
+function showServiceForm(svc) {
+  var s = svc || {};
+  var existingImg = s.image || s.icon || "";
+  if (existingImg && !existingImg.startsWith("http")) existingImg = API + existingImg;
+
+  var html = '<form id="svcForm" class="space-y-4">' +
+    '<div>' +
+    '<label class="text-xs text-gray-500 font-medium block mb-2">Расм</label>' +
+    '<div id="imgPreviewWrap" class="relative rounded-xl overflow-hidden bg-gray-100 border-2 border-dashed border-gray-300 mb-2 flex items-center justify-center" style="height:140px">' +
+    (existingImg
+      ? '<img id="imgPreview" src="' + existingImg + '" class="w-full h-full object-cover absolute inset-0" />'
+      : '<div id="imgPlaceholder" class="flex flex-col items-center gap-2 text-gray-400 pointer-events-none"><svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg><span class="text-xs">Расм танланмаган</span></div>'
+    ) +
+    '<input type="file" name="image" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="previewImg(this)" />' +
+    '</div>' +
+    '<p class="text-[11px] text-gray-400">JPG, PNG, WEBP</p>' +
+    '</div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Ном <span class="text-red-400">*</span></label><input name="title" value="' + (s.title || s.name || '') + '" required placeholder="Masalan: VIP трансфер" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Қисқа тавсиф <span class="text-red-400">*</span></label><input name="short_description" value="' + (s.short_description || '') + '" required placeholder="1-2 жумлада қисқача..." class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Тўлиқ тавсиф</label><textarea name="description" rows="3" placeholder="Хизмат ҳақида батафсил..." class="' + INPUT + ' resize-none">' + (s.description || '') + '</textarea></div>' +
+    '<input type="hidden" name="id" value="' + (s.id || '') + '" />' +
+    '<button type="submit" class="' + BTN + '">' + (s.id ? '💾 Сақлаш' : '➕ Қўшиш') + '</button></form>';
+  openModal(s.id ? "Хизматни таҳрирлаш" : "Янги хизмат", html);
+  document.getElementById("svcForm").addEventListener("submit", saveService);
+}
+
+async function editService(id) {
+  var res = await apiFetchAdmin("/services/admin/directions/" + id + "/");
+  if (!res || !res.ok) return;
+  showServiceForm(await res.json());
+}
+
+async function saveService(e) {
+  e.preventDefault();
+  var form = e.target;
+  var id = form.id.value;
+  var fd = new FormData();
+  // Send both 'title' and 'name' since API may use either field
+  fd.append("title", form.title.value);
+  fd.append("name", form.title.value);
+  if (form.short_description.value) fd.append("short_description", form.short_description.value);
+  if (form.slug && form.slug.value) fd.append("slug", form.slug.value);
+  if (form.description.value) fd.append("description", form.description.value);
+  if (form.image.files[0]) fd.append("image", form.image.files[0]);
+  var url = id ? "/services/admin/directions/" + id + "/" : "/services/admin/directions/";
+  var res = await apiFetchAdmin(url, { method: id ? "PUT" : "POST", headers: authHeadersMultipart(), body: fd });
+  if (res && res.ok) {
+    toast(id ? "Хизмат янгиланди" : "Хизмат қўшилди", "success");
+    closeModal();
+    loadServicesAdmin();
+  } else {
+    var errData = await res.json().catch(function() { return {}; });
+    var errMsg = Object.entries(errData).map(function(kv) {
+      return kv[0] + ": " + (Array.isArray(kv[1]) ? kv[1].join(", ") : JSON.stringify(kv[1]));
+    }).join(" | ");
+    toast("Хато: " + (errMsg || res.status), "error");
+    console.error("saveService error:", errData);
+  }
+}
+
+async function deleteService(id) {
+  if (!confirm("Хизматни ўчиришни хоҳлайсизми?")) return;
+  var res = await apiFetchAdmin("/services/admin/directions/" + id + "/", { method: "DELETE", headers: authHeaders() });
+  if (res && (res.ok || res.status === 204)) { toast("Хизмат ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+  loadServicesAdmin();
+}
+
+// ─── CLIENTS ──────────────────────────────────────────
+async function loadClientsAdmin() {
+  var container = document.getElementById("clientsTable");
+  container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
+  var res = await apiFetchAdmin("/clients/admin/list/");
+  if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
+  var data = await res.json();
+  var items = data.results || data || [];
+  if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Мижозлар йўқ</div>'; return; }
+  var rows = items.map(function(c) {
+    var logo = c.logo || c.image || "";
+    if (logo && !logo.startsWith("http")) logo = API + logo;
+    return '<tr ' + trClass() + '>' +
+      '<td class="p-4">' + (logo ? '<img src="' + logo + '" class="w-14 h-9 object-contain">' : '<div class="w-14 h-9 bg-gray-100 rounded"></div>') + '</td>' +
+      tdBold(c.name || c.company_name || "-") + td(c.id) +
+      '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editClient(" + c.id + ")") + actionBtn("Ўчириш","red-400","deleteClient(" + c.id + ")") + '</td></tr>';
+  }).join("");
+  container.innerHTML = makeTable(["Лого","Ном","ID","Амаллар"], rows);
+}
+
+function showClientForm(client) {
+  var c = client || {};
+  var existingLogo = c.logo || c.image || "";
+  if (existingLogo && !existingLogo.startsWith("http")) existingLogo = API + existingLogo;
+
+  var html = '<form id="clientForm" class="space-y-4">' +
+    '<div>' +
+    '<label class="text-xs text-gray-500 font-medium block mb-2">Лого</label>' +
+    '<div id="imgPreviewWrap" class="relative rounded-xl overflow-hidden bg-gray-50 border-2 border-dashed border-gray-300 mb-2 flex items-center justify-center" style="height:120px">' +
+    (existingLogo
+      ? '<img id="imgPreview" src="' + existingLogo + '" class="max-h-20 max-w-[200px] object-contain absolute" />'
+      : '<div id="imgPlaceholder" class="flex flex-col items-center gap-2 text-gray-400 pointer-events-none"><svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg><span class="text-xs">Лого танланмаган</span></div>'
+    ) +
+    '<input type="file" name="logo" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="previewImg(this)" />' +
+    '</div>' +
+    '<p class="text-[11px] text-gray-400">PNG, SVG, JPG · Логотип</p>' +
+    '</div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Ном <span class="text-red-400">*</span></label><input name="name" value="' + (c.name || c.company_name || '') + '" required placeholder="Masalan: AKFA Group" class="' + INPUT + '" /></div>' +
+    '<input type="hidden" name="id" value="' + (c.id || '') + '" />' +
+    '<button type="submit" class="' + BTN + '">' + (c.id ? '💾 Сақлаш' : '➕ Қўшиш') + '</button></form>';
+  openModal(c.id ? "Мижозни таҳрирлаш" : "Янги мижоз", html);
+  document.getElementById("clientForm").addEventListener("submit", saveClient);
+}
+
+async function editClient(id) {
+  var res = await apiFetchAdmin("/clients/admin/list/" + id + "/");
+  if (!res || !res.ok) return;
+  showClientForm(await res.json());
+}
+
+async function saveClient(e) {
+  e.preventDefault();
+  var form = e.target;
+  var id = form.id.value;
+  var fd = new FormData();
+  // API may use 'name' or 'company_name'
+  fd.append("name", form.name.value);
+  fd.append("company_name", form.name.value);
+  if (form.logo.files[0]) fd.append("logo", form.logo.files[0]);
+  var url = id ? "/clients/admin/list/" + id + "/" : "/clients/admin/list/";
+  var res = await apiFetchAdmin(url, { method: id ? "PUT" : "POST", headers: authHeadersMultipart(), body: fd });
+  if (res && res.ok) {
+    toast(id ? "Мижоз янгиланди" : "Мижоз қўшилди", "success");
+    closeModal(); loadClientsAdmin();
+  } else {
+    var errData = await res.json().catch(function() { return {}; });
+    var errMsg = Object.entries(errData).map(function(kv) {
+      return kv[0] + ": " + (Array.isArray(kv[1]) ? kv[1].join(", ") : JSON.stringify(kv[1]));
+    }).join(" | ");
+    toast("Хато: " + (errMsg || res.status), "error");
+    console.error("saveClient error:", errData);
+  }
+}
+
+async function deleteClient(id) {
+  if (!confirm("Мижозни ўчиришни хоҳлайсизми?")) return;
+  var res = await apiFetchAdmin("/clients/admin/list/" + id + "/", { method: "DELETE", headers: authHeaders() });
+  if (res && (res.ok || res.status === 204)) { toast("Мижоз ўчирилди", "success"); } else { toast("Хато юз берди", "error"); }
+  loadClientsAdmin();
+}
+
+// ─── SETTINGS ─────────────────────────────────────────
+async function loadSettingsAdmin() {
+  var container = document.getElementById("settingsForm");
+  container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
+  var res = await apiFetchAdmin("/site-settings/admin/");
+  if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
+  var data = await res.json();
+  var s = Array.isArray(data) ? data[0] : (data.results ? data.results[0] : data);
+  if (!s) s = {};
+
+  container.innerHTML = '<form id="settForm" class="space-y-5">' +
+    '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Телефон</label><input name="phone" value="' + (s.phone || '') + '" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Email</label><input name="email" value="' + (s.email || '') + '" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Манзил</label><input name="address" value="' + (s.address || '') + '" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Telegram</label><input name="telegram" value="' + (s.telegram || '') + '" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Instagram</label><input name="instagram" value="' + (s.instagram || '') + '" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Facebook</label><input name="facebook" value="' + (s.facebook || '') + '" class="' + INPUT + '" /></div>' +
+    '</div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Иш вақти</label><input name="working_hours" value="' + (s.working_hours || '') + '" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Сайт тавсифи (SEO)</label><textarea name="description" rows="3" class="' + INPUT + ' resize-none">' + (s.description || '') + '</textarea></div>' +
+    '<button type="submit" class="bg-accent text-white font-semibold px-8 py-3 rounded-xl hover:bg-[#c73e54] transition-colors">Сақлаш</button>' +
+    '</form>';
+
+  document.getElementById("settForm").addEventListener("submit", saveSettings);
+}
+
+async function saveSettings(e) {
+  e.preventDefault();
+  var form = e.target;
+  var body = { phone: form.phone.value, email: form.email.value, address: form.address.value, telegram: form.telegram.value, instagram: form.instagram.value, facebook: form.facebook.value, working_hours: form.working_hours.value, description: form.description.value };
+  var res = await apiFetchAdmin("/site-settings/admin/", { method: "PATCH", headers: authHeaders(), body: JSON.stringify(body) });
+  if (res && res.ok) {
+    toast("Созламалар сақланди", "success");
+  } else {
+    toast("Хато юз берди", "error");
+  }
+}
+
+// ─── IMAGE PREVIEW ────────────────────────────────────
+function previewImg(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var wrap = document.getElementById("imgPreviewWrap");
+    if (!wrap) return;
+
+    // Remove placeholder if exists
+    var placeholder = document.getElementById("imgPlaceholder");
+    if (placeholder) placeholder.remove();
+
+    // Update or create preview image
+    var existing = document.getElementById("imgPreview");
+    if (existing) {
+      existing.src = e.target.result;
+    } else {
+      var img = document.createElement("img");
+      img.id = "imgPreview";
+      img.src = e.target.result;
+      img.className = "w-full h-full object-cover absolute inset-0";
+      // Insert before the file input
+      wrap.insertBefore(img, wrap.querySelector('input[type="file"]'));
+
+      // Add hover overlay
+      var overlay = document.createElement("div");
+      overlay.className = "absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity pointer-events-none";
+      overlay.innerHTML = '<span class="text-white text-xs font-medium">Алмаштириш</span>';
+      wrap.insertBefore(overlay, wrap.querySelector('input[type="file"]'));
+    }
+
+    // Show filename below
+    var hint = wrap.parentElement.querySelector("p");
+    if (hint) hint.textContent = "✓ " + input.files[0].name;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// ─── SIDEBAR TOGGLE (mobile) ─────────────────────────
+function toggleSidebar() {
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("sidebarOverlay");
+  var isOpen = !sidebar.classList.contains("-translate-x-full");
+  if (isOpen) { closeSidebar(); } else {
+    sidebar.classList.remove("-translate-x-full");
+    overlay.classList.remove("hidden");
+  }
+}
+function closeSidebar() {
+  var sidebar = document.getElementById("sidebar");
+  var overlay = document.getElementById("sidebarOverlay");
+  sidebar.classList.add("-translate-x-full");
+  overlay.classList.add("hidden");
+}
+
+// ─── INIT ─────────────────────────────────────────────
+if (tokens && tokens.access) { showAdmin(); } else { showLogin(); }
+
+document.getElementById("loginPass").addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
+document.getElementById("loginUser").addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
+</script>
+</body>
+</html>

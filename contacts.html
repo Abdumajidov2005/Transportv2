@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="./imgs/favicon.ico" />
     <link rel="apple-touch-icon" href="./imgs/favicon.png" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
     <script>
       tailwind.config = {
@@ -14,7 +15,7 @@
           extend: {
             colors: {
               accent: "#e94560",
-              dark: { 900: "#0a0a0f", 800: "#0f0f17", 700: "#14141f", 600: "#1a1a28", 500: "#222233", 400: "#2a2a3d" },
+              dark: { 900: "#f5f5f7", 800: "#eaeaef", 700: "#ffffff", 600: "#e8e8ed", 500: "#d4d4dc", 400: "#c0c0cc" },
             },
             fontFamily: {
               heading: ["Space Grotesk", "system-ui", "sans-serif"],
@@ -26,37 +27,42 @@
     </script>
     <style>
       body { font-family: "DM Sans", system-ui, sans-serif; }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #f5f5f7; }
+      ::-webkit-scrollbar-thumb { background: #b0b0b8; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #e94560; }
+      * { scrollbar-width: thin; scrollbar-color: #b0b0b8 #f5f5f7; }
       h1,h2,h3,h4,h5,h6 { font-family: "Space Grotesk", system-ui, sans-serif; }
       #mobNav { max-height:0; overflow:hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding-top:0; padding-bottom:0; }
       #mobNav.open { max-height:300px; padding-top:1rem; padding-bottom:1rem; }
-      nav.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.3); }
+      nav.scrolled { background: rgba(255,255,255,0.85); box-shadow: 0 4px 30px rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.08); }
     </style>
   </head>
-  <body class="bg-dark-900 text-gray-200 overflow-x-hidden">
+  <body class="bg-dark-900 text-gray-700 overflow-x-hidden">
     <!-- NAV -->
-    <nav id="mainNav" class="fixed top-0 inset-x-0 z-50 bg-dark-800/95 backdrop-blur-lg border-b border-white/5">
+    <nav id="mainNav" class="fixed top-0 inset-x-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-gray-200/50 transition-all duration-300" style="-webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);">
       <div class="max-w-6xl mx-auto px-4 sm:px-5 h-16 flex items-center justify-between">
         <a href="index.html" class="flex items-center gap-2.5">
           <img src="./imgs/favicon.png" alt="ARTRANS" class="h-9 w-9 rounded-lg object-cover" />
-          <span class="font-heading font-bold text-lg tracking-tight text-white">ARTRANS</span>
+          <span class="font-heading font-bold text-lg tracking-tight text-gray-900">ARTRANS</span>
         </a>
         <div class="hidden md:flex items-center gap-7">
-          <a href="fleet.html" class="text-sm text-gray-400 hover:text-white transition-colors">Автопарк</a>
-          <a href="services.html" class="text-sm text-gray-400 hover:text-white transition-colors">Услуги</a>
-          <a href="clients.html" class="text-sm text-gray-400 hover:text-white transition-colors">Клиенты</a>
-          <a href="contacts.html" class="text-sm text-white font-semibold transition-colors">Контакты</a>
+          <a href="fleet.html" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Автопарк</a>
+          <a href="services.html" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Услуги</a>
+          <a href="clients.html" class="text-sm text-gray-600 hover:text-gray-900 transition-colors">Клиенты</a>
+          <a href="contacts.html" class="text-sm text-gray-900 font-semibold transition-colors">Контакты</a>
           <a href="tel:+998901234567" class="bg-accent text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#c73e54] transition-colors">+998 90 123 45 67</a>
         </div>
-        <button id="burger" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors" onclick="toggleMenu()">
-          <svg id="burgerIcon" class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
-          <svg id="closeIcon" class="w-5 h-5 text-gray-300 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M6 18L18 6" /></svg>
+        <button id="burger" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-900/10 transition-colors" onclick="toggleMenu()">
+          <svg id="burgerIcon" class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+          <svg id="closeIcon" class="w-5 h-5 text-gray-700 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M6 18L18 6" /></svg>
         </button>
       </div>
-      <div id="mobNav" class="md:hidden bg-dark-800 border-t border-white/5 px-5 flex flex-col gap-1">
-        <a href="fleet.html" class="text-sm text-gray-300 py-3 border-b border-white/5">Автопарк</a>
-        <a href="services.html" class="text-sm text-gray-300 py-3 border-b border-white/5">Услуги</a>
-        <a href="clients.html" class="text-sm text-gray-300 py-3 border-b border-white/5">Клиенты</a>
-        <a href="contacts.html" class="text-sm text-accent font-semibold py-3 border-b border-white/5">Контакты</a>
+      <div id="mobNav" class="md:hidden bg-white/95 border-t border-gray-200/50 px-5 flex flex-col gap-1">
+        <a href="fleet.html" class="text-sm text-gray-600 py-3 border-b border-gray-200/50">Автопарк</a>
+        <a href="services.html" class="text-sm text-gray-600 py-3 border-b border-gray-200/50">Услуги</a>
+        <a href="clients.html" class="text-sm text-gray-600 py-3 border-b border-gray-200/50">Клиенты</a>
+        <a href="contacts.html" class="text-sm text-accent font-semibold py-3 border-b border-gray-200/50">Контакты</a>
         <a href="tel:+998901234567" class="text-sm font-semibold text-accent py-3">+998 90 123 45 67</a>
       </div>
     </nav>
@@ -65,7 +71,7 @@
     <section class="pt-28 pb-10 px-4 sm:px-5">
       <div class="max-w-6xl mx-auto">
         <p class="text-xs text-accent font-semibold uppercase tracking-wider mb-2">КОНТАКТЫ</p>
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-3">Свяжитесь с нами</h1>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-3">Свяжитесь с нами</h1>
         <p class="text-gray-500 text-sm sm:text-[15px] max-w-lg">Ответ от менеджера — в течение 15 минут. Работаем круглосуточно.</p>
       </div>
     </section>
@@ -75,57 +81,57 @@
       <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Contact cards -->
         <div class="space-y-4">
-          <div class="bg-dark-700 border border-white/5 rounded-2xl p-6">
+          <div class="bg-white border border-gray-200 rounded-2xl p-6">
             <div class="flex items-center gap-3 mb-4">
               <div class="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
                 <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
               </div>
-              <h3 class="font-heading font-bold text-white text-lg">Телефон</h3>
+              <h3 class="font-heading font-bold text-gray-900 text-lg">Телефон</h3>
             </div>
-            <a href="tel:+998901234567" class="text-xl font-semibold text-white hover:text-accent transition-colors">+998 90 123 45 67</a>
+            <a href="tel:+998901234567" class="text-xl font-semibold text-gray-900 hover:text-accent transition-colors">+998 90 123 45 67</a>
             <p class="text-sm text-gray-500 mt-2">Диспетчер: круглосуточно</p>
           </div>
 
-          <div class="bg-dark-700 border border-white/5 rounded-2xl p-6">
+          <div class="bg-white border border-gray-200 rounded-2xl p-6">
             <div class="flex items-center gap-3 mb-4">
               <div class="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
                 <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
               </div>
-              <h3 class="font-heading font-bold text-white text-lg">Email</h3>
+              <h3 class="font-heading font-bold text-gray-900 text-lg">Email</h3>
             </div>
-            <a href="mailto:info@artrans.uz" class="text-xl font-semibold text-white hover:text-accent transition-colors">info@artrans.uz</a>
+            <a href="mailto:info@artrans.uz" class="text-xl font-semibold text-gray-900 hover:text-accent transition-colors">info@artrans.uz</a>
             <p class="text-sm text-gray-500 mt-2">Ответим в течение 1 часа</p>
           </div>
 
-          <div class="bg-dark-700 border border-white/5 rounded-2xl p-6">
+          <div class="bg-white border border-gray-200 rounded-2xl p-6">
             <div class="flex items-center gap-3 mb-4">
               <div class="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
                 <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
               </div>
-              <h3 class="font-heading font-bold text-white text-lg">Адрес</h3>
+              <h3 class="font-heading font-bold text-gray-900 text-lg">Адрес</h3>
             </div>
-            <p class="text-xl font-semibold text-white">г. Ташкент, Узбекистан</p>
+            <p class="text-xl font-semibold text-gray-900">г. Ташкент, Узбекистан</p>
             <p class="text-sm text-gray-500 mt-2">Подача автомобилей по всему городу</p>
           </div>
 
-          <div class="bg-dark-700 border border-white/5 rounded-2xl p-6">
+          <div class="bg-white border border-gray-200 rounded-2xl p-6">
             <div class="flex items-center gap-3 mb-4">
               <div class="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
                 <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               </div>
-              <h3 class="font-heading font-bold text-white text-lg">Часы работы</h3>
+              <h3 class="font-heading font-bold text-gray-900 text-lg">Часы работы</h3>
             </div>
-            <p class="text-white font-semibold">Пн — Сб: 08:00 – 20:00</p>
-            <p class="text-gray-400 text-sm mt-1">Вс: по запросу</p>
+            <p class="text-gray-900 font-semibold">Пн — Сб: 08:00 – 20:00</p>
+            <p class="text-gray-500 text-sm mt-1">Вс: по запросу</p>
             <p class="text-sm text-gray-500 mt-2">Диспетчер доступен 24/7</p>
           </div>
         </div>
 
         <!-- CTA / Messengers -->
         <div class="space-y-4">
-          <div class="bg-gradient-to-br from-dark-600 to-dark-700 border border-white/5 rounded-2xl p-8">
-            <h2 class="font-heading font-bold text-white text-2xl mb-3">Оставить заявку</h2>
-            <p class="text-gray-400 text-sm mb-6">Выберите удобный способ связи — ответим в течение 15 минут.</p>
+          <div class="bg-gradient-to-br from-gray-100 to-gray-200 border border-gray-200 rounded-2xl p-8">
+            <h2 class="font-heading font-bold text-gray-900 text-2xl mb-3">Оставить заявку</h2>
+            <p class="text-gray-500 text-sm mb-6">Выберите удобный способ связи — ответим в течение 15 минут.</p>
             <div class="space-y-3">
               <a href="tel:+998901234567" class="flex items-center gap-3 w-full bg-accent hover:bg-[#c73e54] text-white py-4 px-6 rounded-xl text-sm font-semibold transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
@@ -142,25 +148,13 @@
             </div>
           </div>
 
-          <div class="bg-dark-700 border border-white/5 rounded-2xl p-6">
-            <h3 class="font-heading font-bold text-white text-lg mb-3">Быстрые ответы</h3>
+          <div class="bg-white border border-gray-200 rounded-2xl p-6">
+            <h3 class="font-heading font-bold text-gray-900 text-lg mb-3">Быстрые ответы</h3>
             <div class="space-y-3 text-sm">
-              <div class="flex items-start gap-3">
-                <svg class="w-4 h-4 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-                <span class="text-gray-400">Подача автомобиля за 15 минут</span>
-              </div>
-              <div class="flex items-start gap-3">
-                <svg class="w-4 h-4 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-                <span class="text-gray-400">Бесплатная консультация по подбору</span>
-              </div>
-              <div class="flex items-start gap-3">
-                <svg class="w-4 h-4 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-                <span class="text-gray-400">Индивидуальные условия для корпоративных клиентов</span>
-              </div>
-              <div class="flex items-start gap-3">
-                <svg class="w-4 h-4 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-                <span class="text-gray-400">Скидки при долгосрочной аренде</span>
-              </div>
+              <div class="flex items-start gap-3"><svg class="w-4 h-4 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg><span class="text-gray-500">Подача автомобиля за 15 минут</span></div>
+              <div class="flex items-start gap-3"><svg class="w-4 h-4 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg><span class="text-gray-500">Бесплатная консультация по подбору</span></div>
+              <div class="flex items-start gap-3"><svg class="w-4 h-4 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg><span class="text-gray-500">Индивидуальные условия для корпоративных клиентов</span></div>
+              <div class="flex items-start gap-3"><svg class="w-4 h-4 text-accent shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg><span class="text-gray-500">Скидки при долгосрочной аренде</span></div>
             </div>
           </div>
         </div>
@@ -168,31 +162,29 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-dark-800 border-t border-white/5 text-gray-500 pt-12 md:pt-14 pb-8 px-4 sm:px-5">
+    <footer class="bg-dark-800 border-t border-gray-200 text-gray-500 pt-12 md:pt-14 pb-8 px-4 sm:px-5">
       <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-10">
         <div class="col-span-2">
           <div class="flex items-center gap-2.5 mb-4">
             <img src="./imgs/favicon.png" alt="ARTRANS" class="h-8 w-8 rounded-lg object-cover" />
-            <span class="font-heading font-bold text-white text-base tracking-tight">ARTRANS</span>
+            <span class="font-heading font-bold text-gray-900 text-base tracking-tight">ARTRANS</span>
           </div>
           <p class="text-sm leading-relaxed max-w-xs">Транспортные услуги для бизнеса, туризма и частных клиентов. Ташкент и весь Узбекистан.</p>
         </div>
         <div>
-          <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Контакты</h4>
+          <h4 class="text-gray-900 text-xs font-semibold uppercase tracking-wider mb-4">Контакты</h4>
           <div class="text-sm space-y-2"><p>г. Ташкент, Узбекистан</p><p>+998 90 123 45 67</p><p>info@artrans.uz</p></div>
         </div>
         <div>
-          <h4 class="text-white text-xs font-semibold uppercase tracking-wider mb-4">Часы работы</h4>
+          <h4 class="text-gray-900 text-xs font-semibold uppercase tracking-wider mb-4">Часы работы</h4>
           <div class="text-sm space-y-2"><p>Пн — Сб: 08:00 – 20:00</p><p>Вс: по запросу</p><p>Диспетчер: круглосуточно</p></div>
         </div>
       </div>
-      <div class="max-w-6xl mx-auto pt-6 border-t border-white/[.04] text-xs text-center text-gray-600">&copy; 2026 ARTRANS</div>
+      <div class="max-w-6xl mx-auto pt-6 border-t border-gray-200 text-xs text-center text-gray-500">&copy; 2026 ARTRANS</div>
     </footer>
 
     <script>
-      window.addEventListener("scroll", function() {
-        document.getElementById("mainNav").classList.toggle("scrolled", window.scrollY > 10);
-      });
+      window.addEventListener("scroll", function() { document.getElementById("mainNav").classList.toggle("scrolled", window.scrollY > 10); });
       function toggleMenu() {
         var menu = document.getElementById("mobNav");
         var open = menu.classList.toggle("open");
