@@ -370,10 +370,18 @@ function showLogin() {
 async function showAdmin() {
   document.getElementById("loginScreen").classList.add("hidden");
   document.getElementById("adminPanel").classList.remove("hidden");
+  // /auth/me/ — faqat username ko'rsatish uchun, xato bo'lsa bloklash yo'q
   try {
-    var res = await apiFetchAdmin("/auth/me/");
-    if (res && res.ok) { var user = await res.json(); document.getElementById("userName").textContent = user.username || user.email || "Admin"; }
-  } catch(e) {}
+    var meRes = await fetch(API + "/auth/me/", { headers: { "Authorization": "Bearer " + getAccess() } });
+    if (meRes && meRes.ok) {
+      var user = await meRes.json();
+      document.getElementById("userName").textContent = user.username || user.email || "Admin";
+    } else {
+      document.getElementById("userName").textContent = "Admin";
+    }
+  } catch(e) {
+    document.getElementById("userName").textContent = "Admin";
+  }
   showSection("orders");
 }
 
@@ -413,6 +421,35 @@ function makeTable(heads, rows) {
 function td(content) { return '<td class="p-4 text-gray-700">' + content + '</td>'; }
 function tdBold(content) { return '<td class="p-4 text-gray-900 font-medium">' + content + '</td>'; }
 function trClass() { return 'class="border-b border-gray-100 hover:bg-gray-50 transition-colors"'; }
+
+// ─── PAGINATION HELPER ────────────────────────────────
+function makePagination(currentPage, totalPages, fnName) {
+  if (!totalPages || totalPages <= 1) return '';
+  var btns = '';
+  // Prev
+  btns += '<button onclick="' + fnName + '(' + (currentPage - 1) + ')" ' + (currentPage <= 1 ? 'disabled' : '') + ' class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">' +
+    '<svg class="w-3.5 h-3.5 inline" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>' +
+  '</button>';
+  // Pages
+  var start = Math.max(1, currentPage - 2);
+  var end = Math.min(totalPages, currentPage + 2);
+  if (start > 1) btns += '<button onclick="' + fnName + '(1)" class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-100 transition-colors">1</button>';
+  if (start > 2) btns += '<span class="px-2 text-gray-400 text-xs">...</span>';
+  for (var i = start; i <= end; i++) {
+    var active = i === currentPage ? 'bg-accent text-white border-accent' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-100';
+    btns += '<button onclick="' + fnName + '(' + i + ')" class="px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ' + active + '">' + i + '</button>';
+  }
+  if (end < totalPages - 1) btns += '<span class="px-2 text-gray-400 text-xs">...</span>';
+  if (end < totalPages) btns += '<button onclick="' + fnName + '(' + totalPages + ')" class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-100 transition-colors">' + totalPages + '</button>';
+  // Next
+  btns += '<button onclick="' + fnName + '(' + (currentPage + 1) + ')" ' + (currentPage >= totalPages ? 'disabled' : '') + ' class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">' +
+    '<svg class="w-3.5 h-3.5 inline" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg>' +
+  '</button>';
+  return '<div class="flex items-center justify-between px-4 py-3 border-t border-gray-100">' +
+    '<p class="text-xs text-gray-400">' + currentPage + ' / ' + totalPages + ' sahifa</p>' +
+    '<div class="flex items-center gap-1">' + btns + '</div>' +
+  '</div>';
+}
 function actionBtn(label, color, onclick) {
   var icons = {
     'Таҳрирлаш': '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/></svg>',
@@ -433,27 +470,42 @@ function actionBtn(label, color, onclick) {
 }
 
 // ─── ORDERS ───────────────────────────────────────────
-async function loadOrders() {
+var ordersPage = 1;
+async function loadOrders(page) {
+  if (!page) page = 1;
+  ordersPage = page;
   var container = document.getElementById("ordersTable");
   container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
-  var res = await apiFetchAdmin("/orders/admin/");
+  var res = await apiFetchAdmin("/orders/admin/?page=" + page);
   if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
   var data = await res.json();
   var orders = data.results || data || [];
+  var totalCount = data.count || orders.length;
+  var pageSize = 10;
+  var totalPages = Math.ceil(totalCount / pageSize);
   if (orders.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Буюртмалар йўқ</div>'; return; }
 
   var rows = orders.map(function(o) {
-    var statusClass = o.status === "completed" ? "text-green-600 bg-green-50" : o.status === "cancelled" ? "text-red-500 bg-red-50" : "text-yellow-600 bg-yellow-50";
+    var statusLabels = { new: 'Янги', processing: 'Жараёнда', done: 'Бажарилди', cancelled: 'Бекор' };
+    var statusColors = {
+      new:        'text-yellow-600 bg-yellow-50',
+      processing: 'text-blue-600 bg-blue-50',
+      done:       'text-green-600 bg-green-50',
+      cancelled:  'text-red-500 bg-red-50'
+    };
+    var st = o.status || 'new';
+    var statusClass = statusColors[st] || 'text-gray-500 bg-gray-100';
+    var statusLabel = statusLabels[st] || st;
     return '<tr ' + trClass() + '>' +
       td('#' + o.id) +
       tdBold(o.full_name || o.name || "-") +
       td(o.phone || o.phone_number || "-") +
-      '<td class="p-4"><span class="' + statusClass + ' text-xs font-semibold px-2.5 py-1 rounded-full">' + (o.status || "new") + '</span></td>' +
+      '<td class="p-4"><span class="' + statusClass + ' text-xs font-semibold px-2.5 py-1 rounded-full">' + statusLabel + '</span></td>' +
       td(o.created_at ? new Date(o.created_at).toLocaleDateString() : "-") +
       '<td class="p-4">' + actionBtn("Кўриш","accent","showOrderDetail(" + o.id + ")") + actionBtn("Ўчириш","red-400","deleteOrder(" + o.id + ")") + '</td>' +
       '</tr>';
   }).join("");
-  container.innerHTML = makeTable(["ID","Исм","Телефон","Статус","Сана","Амаллар"], rows);
+  container.innerHTML = makeTable(["ID","Исм","Телефон","Статус","Сана","Амаллар"], rows) + makePagination(page, totalPages, 'loadOrders');
 }
 
 async function showOrderDetail(id) {
@@ -469,9 +521,9 @@ async function showOrderDetail(id) {
     '</div>' +
     '<div class="bg-gray-50 rounded-xl p-3"><p class="text-xs text-gray-500 mb-1">Изоҳ</p><p class="text-gray-700">' + (o.comment || o.message || "-") + '</p></div>' +
     '<div class="flex gap-2 pt-2">' +
-    '<button onclick="setOrderStatus(' + id + ',\'confirmed\')" class="flex-1 bg-green-50 text-green-600 border border-green-200 px-3 py-2 rounded-xl text-xs font-semibold">✓ Тасдиқлаш</button>' +
-    '<button onclick="setOrderStatus(' + id + ',\'completed\')" class="flex-1 bg-blue-50 text-blue-600 border border-blue-200 px-3 py-2 rounded-xl text-xs font-semibold">✓ Тугалланди</button>' +
-    '<button onclick="setOrderStatus(' + id + ',\'cancelled\')" class="flex-1 bg-red-50 text-red-500 border border-red-200 px-3 py-2 rounded-xl text-xs font-semibold">✕ Бекор</button>' +
+    '<button onclick="setOrderStatus(' + id + ',\'processing\')" class="flex-1 bg-blue-50 text-blue-600 border border-blue-200 px-3 py-2 rounded-xl text-xs font-semibold hover:bg-blue-100 transition-colors">⏳ Жараёнда</button>' +
+    '<button onclick="setOrderStatus(' + id + ',\'done\')" class="flex-1 bg-green-50 text-green-600 border border-green-200 px-3 py-2 rounded-xl text-xs font-semibold hover:bg-green-100 transition-colors">✓ Бажарилди</button>' +
+    '<button onclick="setOrderStatus(' + id + ',\'cancelled\')" class="flex-1 bg-red-50 text-red-500 border border-red-200 px-3 py-2 rounded-xl text-xs font-semibold hover:bg-red-100 transition-colors">✕ Бекор</button>' +
     '</div></div>';
   openModal("Буюртма #" + id, html);
 }
@@ -490,13 +542,19 @@ async function deleteOrder(id) {
 }
 
 // ─── VEHICLES ─────────────────────────────────────────
-async function loadVehiclesAdmin() {
+var vehiclesPage = 1;
+async function loadVehiclesAdmin(page) {
+  if (!page) page = 1;
+  vehiclesPage = page;
   var container = document.getElementById("vehiclesTable");
   container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
-  var res = await apiFetchAdmin("/fleet/admin/vehicles/");
+  var res = await apiFetchAdmin("/fleet/admin/vehicles/?page=" + page);
   if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
   var data = await res.json();
   var items = data.results || data || [];
+  var totalCount = data.count || items.length;
+  var pageSize = 10;
+  var totalPages = Math.ceil(totalCount / pageSize);
   if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Машиналар йўқ</div>'; return; }
 
   var rows = items.map(function(v) {
@@ -512,7 +570,7 @@ async function loadVehiclesAdmin() {
       '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editVehicle(" + v.id + ")") + actionBtn(active ? "Нофаол" : "Фаол", active ? "yellow-500" : "green-500","toggleVehicle(" + v.id + ")") + actionBtn("Ўчириш","red-400","deleteVehicle(" + v.id + ")") + '</td>' +
       '</tr>';
   }).join("");
-  container.innerHTML = makeTable(["Расм","Ном","Категория","Йил","Ҳолат","Амаллар"], rows);
+  container.innerHTML = makeTable(["Расм","Ном","Категория","Йил","Ҳолат","Амаллар"], rows) + makePagination(page, totalPages, 'loadVehiclesAdmin');
 }
 
 async function toggleVehicle(id) {
@@ -533,20 +591,8 @@ async function showVehicleForm(vehicle) {
   var existingImg = v.main_image || v.image || (v.images && v.images[0] && v.images[0].image) || "";
   if (existingImg && !existingImg.startsWith("http")) existingImg = API + existingImg;
 
-  // Kategoriyalarni yuklash
-  var catOptions = '<option value="">Танланмаган</option>';
-  try {
-    var catRes = await apiFetchAdmin("/fleet/admin/categories/");
-    if (catRes && catRes.ok) {
-      var catData = await catRes.json();
-      var cats = catData.results || catData || [];
-      cats.sort(function(a,b){ return (a.id||0)-(b.id||0); });
-      var currentCatId = v.category_id || (v.category && v.category.id) || '';
-      catOptions = cats.map(function(c) {
-        return '<option value="' + c.id + '"' + (c.id == currentCatId ? ' selected' : '') + '>' + c.name + '</option>';
-      }).join('');
-    }
-  } catch(e) {}
+  // Avval formani ko'rsat, keyin kategoriyalarni async yukla
+  var currentCatId = v.category_id || (v.category && v.category.id) || '';
 
   var html = '<form id="vehicleForm" class="space-y-4">' +
 
@@ -570,13 +616,35 @@ async function showVehicleForm(vehicle) {
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Нарх</label><input name="price" value="' + (v.price || v.price_per_day || '') + '" placeholder="Цена договорная" class="' + INPUT + '" /></div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Тавсиф</label><textarea name="description" rows="3" placeholder="Автомобиль ҳақида қисқача..." class="' + INPUT + ' resize-none">' + (v.description || '') + '</textarea></div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Категория <span class="text-red-400">*</span></label>' +
-    '<select name="category" class="' + INPUT + '">' + catOptions + '</select></div>' +
+    '<select name="category" id="catSelect" class="' + INPUT + '"><option value="">Юкланмоқда...</option></select></div>' +
     '<input type="hidden" name="id" value="' + (v.id || '') + '" />' +
     '<button type="submit" class="' + BTN + '"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"/></svg>' + (v.id ? 'Сақлаш' : 'Қўшиш') + '</button>' +
     '</form>';
 
   openModal(v.id ? "Машинани таҳрирлаш" : "Янги машина", html);
   document.getElementById("vehicleForm").addEventListener("submit", saveVehicle);
+
+  // Kategoriyalarni alohida yuklab, select ga to'g'ridan-to'g'ri yozish
+  try {
+    var catRes = await fetch(API + "/fleet/admin/categories/", { headers: { "Authorization": "Bearer " + getAccess() } });
+    var catSelect = document.getElementById("catSelect");
+    if (!catSelect) return; // Modal yopilgan bo'lishi mumkin
+    if (catRes && catRes.ok) {
+      var catData = await catRes.json();
+      var cats = catData.results || catData || [];
+      cats.sort(function(a, b) { return (a.id || 0) - (b.id || 0); });
+      catSelect.innerHTML = '<option value="">Танланмаган</option>' +
+        cats.map(function(c) {
+          var sel = (String(c.id) === String(currentCatId)) ? ' selected' : '';
+          return '<option value="' + c.id + '"' + sel + '>' + c.name + '</option>';
+        }).join('');
+    } else {
+      catSelect.innerHTML = '<option value="">Категориялар юкланмади</option>';
+    }
+  } catch(e) {
+    var catSelect = document.getElementById("catSelect");
+    if (catSelect) catSelect.innerHTML = '<option value="">Хато юз берди</option>';
+  }
 }
 
 async function editVehicle(id) {
@@ -595,11 +663,16 @@ async function saveVehicle(e) {
   if (form.seats.value) fd.append("seats", form.seats.value);
   if (form.price.value) fd.append("price", form.price.value);
   if (form.description.value) fd.append("description", form.description.value);
-  if (form.category.value) fd.append("category", form.category.value);
+
+  // Category — select dan olingan qiymatni log qilamiz
+  var catVal = form.category ? form.category.value : "";
+  console.log("category select value:", catVal);
+  if (catVal) fd.append("category", catVal);
+  else { toast("Категорияни танланг!", "error"); return; }
+
   if (form.image.files[0]) {
     var file = form.image.files[0];
     var ext = file.name.split('.').pop().toLowerCase();
-    // jfif va boshqa formatlarni jpg ga convert qilamiz
     var needsConvert = ['jfif', 'jpe', 'bmp', 'tiff', 'tif'].indexOf(ext) !== -1;
     if (needsConvert) {
       var converted = await new Promise(function(resolve) {
@@ -619,12 +692,19 @@ async function saveVehicle(e) {
         };
         reader.readAsDataURL(file);
       });
+      fd.append("image", converted);
       fd.append("main_image", converted);
     } else {
       var safeFile = new File([file], 'vehicle_' + Date.now() + '.' + ext, { type: file.type });
+      fd.append("image", safeFile);
       fd.append("main_image", safeFile);
     }
   }
+
+  // FormData ichini log qilamiz
+  console.log("FormData yuborilayapti:");
+  for (var pair of fd.entries()) { console.log(" ", pair[0], "=", pair[1]); }
+
   var url = id ? "/fleet/admin/vehicles/" + id + "/" : "/fleet/admin/vehicles/";
   var res = await apiFetchAdmin(url, { method: id ? "PUT" : "POST", headers: authHeadersMultipart(), body: fd });
   if (res && res.ok) {
@@ -769,19 +849,25 @@ async function deleteCategory(id) {
 }
 
 // ─── SERVICES ─────────────────────────────────────────
-async function loadServicesAdmin() {
+var servicesPage = 1;
+async function loadServicesAdmin(page) {
+  if (!page) page = 1;
+  servicesPage = page;
   var container = document.getElementById("servicesTable");
   container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
-  var res = await apiFetchAdmin("/services/admin/directions/");
+  var res = await apiFetchAdmin("/services/admin/directions/?page=" + page);
   if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
   var data = await res.json();
   var items = data.results || data || [];
+  var totalCount = data.count || items.length;
+  var pageSize = 10;
+  var totalPages = Math.ceil(totalCount / pageSize);
   if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Хизматлар йўқ</div>'; return; }
   var rows = items.map(function(s) {
     return '<tr ' + trClass() + '>' + td(s.id) + tdBold(s.title || s.name || "-") + td(s.slug || "-") +
       '<td class="p-4">' + actionBtn("Таҳрирлаш","accent","editService(" + s.id + ")") + actionBtn("Ўчириш","red-400","deleteService(" + s.id + ")") + '</td></tr>';
   }).join("");
-  container.innerHTML = makeTable(["ID","Ном","Slug","Амаллар"], rows);
+  container.innerHTML = makeTable(["ID","Ном","Slug","Амаллар"], rows) + makePagination(page, totalPages, 'loadServicesAdmin');
 }
 
 function showServiceForm(svc) {
@@ -853,13 +939,19 @@ async function deleteService(id) {
 }
 
 // ─── CLIENTS ──────────────────────────────────────────
-async function loadClientsAdmin() {
+var clientsPage = 1;
+async function loadClientsAdmin(page) {
+  if (!page) page = 1;
+  clientsPage = page;
   var container = document.getElementById("clientsTable");
   container.innerHTML = '<div class="p-8 text-center text-gray-400">Юкланмоқда...</div>';
-  var res = await apiFetchAdmin("/clients/admin/list/");
+  var res = await apiFetchAdmin("/clients/admin/list/?page=" + page);
   if (!res || !res.ok) { container.innerHTML = '<div class="p-8 text-center text-red-400">Хато юз берди</div>'; return; }
   var data = await res.json();
   var items = data.results || data || [];
+  var totalCount = data.count || items.length;
+  var pageSize = 10;
+  var totalPages = Math.ceil(totalCount / pageSize);
   if (items.length === 0) { container.innerHTML = '<div class="p-8 text-center text-gray-400">Мижозлар йўқ</div>'; return; }
 
   var cards = items.map(function(c) {
@@ -880,7 +972,7 @@ async function loadClientsAdmin() {
     '</div>';
   }).join("");
 
-  container.innerHTML = '<div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">' + cards + '</div>';
+  container.innerHTML = '<div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">' + cards + '</div>' + makePagination(page, totalPages, 'loadClientsAdmin');
 }
 
 function showClientForm(client) {
