@@ -257,17 +257,30 @@ function loadSiteSettings() {
     var settings = Array.isArray(data) ? data[0] : (data.results ? data.results[0] : data);
     if (!settings) return;
 
-    if (settings.phone) {
+    // Telefon: phone_main yoki phone (eskisi bilan ham ishlaydi)
+    var phone = settings.phone_main || settings.phone || "";
+    if (phone) {
       var phoneEls = document.querySelectorAll('a[href^="tel:"]');
       phoneEls.forEach(function (el) {
-        el.href = "tel:" + settings.phone.replace(/\s/g, "");
-        el.textContent = settings.phone;
+        el.href = "tel:" + phone.replace(/\s/g, "");
+        el.textContent = phone;
       });
     }
-    if (settings.telegram) {
+
+    // Telegram: telegram_link yoki telegram (eskisi bilan ham ishlaydi)
+    var tgLink = settings.telegram_link || settings.telegram || "";
+    if (tgLink) {
       var tgEls = document.querySelectorAll('a[href*="t.me"]');
-      tgEls.forEach(function (el) { el.href = settings.telegram; });
+      tgEls.forEach(function (el) { el.href = tgLink; });
     }
+
+    // WhatsApp
+    var waLink = settings.whatsapp_link || "";
+    if (waLink) {
+      var waEls = document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp"]');
+      waEls.forEach(function (el) { el.href = waLink; });
+    }
+
     if (settings.address) {
       var addrEl = document.querySelector("footer .text-sm.space-y-2 p:first-child");
       if (addrEl) addrEl.textContent = settings.address;

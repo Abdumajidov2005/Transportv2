@@ -596,7 +596,35 @@ async function saveVehicle(e) {
   if (form.price.value) fd.append("price", form.price.value);
   if (form.description.value) fd.append("description", form.description.value);
   if (form.category.value) fd.append("category", form.category.value);
-  if (form.image.files[0]) fd.append("main_image", form.image.files[0]);
+  if (form.image.files[0]) {
+    var file = form.image.files[0];
+    var ext = file.name.split('.').pop().toLowerCase();
+    // jfif va boshqa formatlarni jpg ga convert qilamiz
+    var needsConvert = ['jfif', 'jpe', 'bmp', 'tiff', 'tif'].indexOf(ext) !== -1;
+    if (needsConvert) {
+      var converted = await new Promise(function(resolve) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            var canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            canvas.getContext('2d').drawImage(img, 0, 0);
+            canvas.toBlob(function(blob) {
+              resolve(new File([blob], 'vehicle_' + Date.now() + '.jpg', { type: 'image/jpeg' }));
+            }, 'image/jpeg', 0.92);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+      fd.append("main_image", converted);
+    } else {
+      var safeFile = new File([file], 'vehicle_' + Date.now() + '.' + ext, { type: file.type });
+      fd.append("main_image", safeFile);
+    }
+  }
   var url = id ? "/fleet/admin/vehicles/" + id + "/" : "/fleet/admin/vehicles/";
   var res = await apiFetchAdmin(url, { method: id ? "PUT" : "POST", headers: authHeadersMultipart(), body: fd });
   if (res && res.ok) {
@@ -604,11 +632,13 @@ async function saveVehicle(e) {
     closeModal(); loadVehiclesAdmin();
   } else {
     var errData = await res.json().catch(function() { return {}; });
+    console.error("saveVehicle error:", JSON.stringify(errData, null, 2));
     var errMsg = Object.entries(errData).map(function(kv) {
-      return kv[0] + ": " + (Array.isArray(kv[1]) ? kv[1].join(", ") : JSON.stringify(kv[1]));
-    }).join(" | ");
+      var val = Array.isArray(kv[1]) ? kv[1].join(", ") : (typeof kv[1] === 'object' ? JSON.stringify(kv[1]) : kv[1]);
+      return kv[0] + ": " + val;
+    }).join("\n");
     toast("Хато: " + (errMsg || res.status), "error");
-    console.error("saveVehicle error:", errData);
+    alert("Хато:\n" + (errMsg || res.status));
   }
 }
 
@@ -925,12 +955,31 @@ async function loadSettingsAdmin() {
   var s = Array.isArray(data) ? data[0] : (data.results ? data.results[0] : data);
   if (!s) s = {};
 
+  // Rasm preview uchun mavjud logoni ko'rsatish
+  var logoUrl = s.logo || s.image || "";
+  if (logoUrl && !logoUrl.startsWith("http")) logoUrl = API + logoUrl;
+  var logoBlock =
+    '<div>' +
+    '<label class="text-xs text-gray-500 font-medium block mb-1">Логотип</label>' +
+    '<div id="settImgWrap" class="relative rounded-xl overflow-hidden bg-gray-50 border-2 border-dashed border-gray-300 mb-2 flex items-center justify-center" style="height:100px">' +
+    (logoUrl
+      ? '<img id="settImgPreview" src="' + logoUrl + '" class="max-h-16 max-w-[180px] object-contain absolute" />'
+      : '<div id="settImgPlaceholder" class="flex flex-col items-center gap-1 text-gray-400 pointer-events-none"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg><span class="text-xs">Расм танланмаган</span></div>'
+    ) +
+    '<input type="file" name="logo" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="previewSettImg(this)" />' +
+    '</div>' +
+    '<p class="text-[11px] text-gray-400">PNG, SVG, JPG — логотип</p>' +
+    '</div>';
+
   container.innerHTML = '<form id="settForm" class="space-y-5">' +
+    logoBlock +
     '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
-    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Телефон</label><input name="phone" value="' + (s.phone || '') + '" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Асосий телефон</label><input name="phone_main" value="' + (s.phone_main || s.phone || '') + '" placeholder="+998901234567" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Иккинчи телефон</label><input name="phone_secondary" value="' + (s.phone_secondary || '') + '" placeholder="+998901234568" class="' + INPUT + '" /></div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Email</label><input name="email" value="' + (s.email || '') + '" class="' + INPUT + '" /></div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Манзил</label><input name="address" value="' + (s.address || '') + '" class="' + INPUT + '" /></div>' +
-    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Telegram</label><input name="telegram" value="' + (s.telegram || '') + '" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">Telegram</label><input name="telegram_link" value="' + (s.telegram_link || s.telegram || '') + '" placeholder="https://t.me/artrans" class="' + INPUT + '" /></div>' +
+    '<div><label class="text-xs text-gray-500 font-medium block mb-1">WhatsApp</label><input name="whatsapp_link" value="' + (s.whatsapp_link || '') + '" placeholder="https://wa.me/998901234567" class="' + INPUT + '" /></div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Instagram</label><input name="instagram" value="' + (s.instagram || '') + '" class="' + INPUT + '" /></div>' +
     '<div><label class="text-xs text-gray-500 font-medium block mb-1">Facebook</label><input name="facebook" value="' + (s.facebook || '') + '" class="' + INPUT + '" /></div>' +
     '</div>' +
@@ -945,13 +994,71 @@ async function loadSettingsAdmin() {
 async function saveSettings(e) {
   e.preventDefault();
   var form = e.target;
-  var body = { phone: form.phone.value, email: form.email.value, address: form.address.value, telegram: form.telegram.value, instagram: form.instagram.value, facebook: form.facebook.value, working_hours: form.working_hours.value, description: form.description.value };
-  var res = await apiFetchAdmin("/site-settings/admin/", { method: "PATCH", headers: authHeaders(), body: JSON.stringify(body) });
+  var logoFile = form.logo && form.logo.files && form.logo.files[0];
+
+  if (logoFile) {
+    // Rasm bo'lsa FormData ishlatish kerak
+    var fd = new FormData();
+    fd.append("phone_main", form.phone_main.value);
+    fd.append("phone_secondary", form.phone_secondary.value);
+    fd.append("email", form.email.value);
+    fd.append("address", form.address.value);
+    fd.append("telegram_link", form.telegram_link.value);
+    fd.append("whatsapp_link", form.whatsapp_link.value);
+    fd.append("instagram", form.instagram.value);
+    fd.append("facebook", form.facebook.value);
+    fd.append("working_hours", form.working_hours.value);
+    fd.append("description", form.description.value);
+    fd.append("logo", logoFile);
+    var res = await apiFetchAdmin("/site-settings/admin/", { method: "PATCH", headers: authHeadersMultipart(), body: fd });
+  } else {
+    // Rasm yo'q — oddiy JSON
+    var body = {
+      phone_main: form.phone_main.value,
+      phone_secondary: form.phone_secondary.value,
+      email: form.email.value,
+      address: form.address.value,
+      telegram_link: form.telegram_link.value,
+      whatsapp_link: form.whatsapp_link.value,
+      instagram: form.instagram.value,
+      facebook: form.facebook.value,
+      working_hours: form.working_hours.value,
+      description: form.description.value
+    };
+    var res = await apiFetchAdmin("/site-settings/admin/", { method: "PATCH", headers: authHeaders(), body: JSON.stringify(body) });
+  }
   if (res && res.ok) {
     toast("Созламалар сақланди", "success");
   } else {
-    toast("Хато юз берди", "error");
+    var errData = await res.json().catch(function() { return {}; });
+    var errMsg = Object.entries(errData).map(function(kv) {
+      return kv[0] + ": " + (Array.isArray(kv[1]) ? kv[1].join(", ") : JSON.stringify(kv[1]));
+    }).join(" | ");
+    toast("Хато: " + (errMsg || res.status), "error");
+    console.error("saveSettings error:", errData);
   }
+}
+
+// Sozlamalar rasmi preview
+function previewSettImg(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var wrap = document.getElementById("settImgWrap");
+    if (!wrap) return;
+    var placeholder = document.getElementById("settImgPlaceholder");
+    if (placeholder) placeholder.remove();
+    var existing = document.getElementById("settImgPreview");
+    if (existing) { existing.src = e.target.result; }
+    else {
+      var img = document.createElement("img");
+      img.id = "settImgPreview";
+      img.src = e.target.result;
+      img.className = "max-h-16 max-w-[180px] object-contain absolute";
+      wrap.insertBefore(img, wrap.querySelector("input[type=file]"));
+    }
+  };
+  reader.readAsDataURL(input.files[0]);
 }
 
 // ─── IMAGE PREVIEW ────────────────────────────────────
