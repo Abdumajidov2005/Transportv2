@@ -121,7 +121,7 @@
                 <div><p class="text-xs text-accent font-semibold uppercase tracking-wider mb-1">ПОХОЖИЕ</p><h2 class="font-heading font-bold text-gray-900 text-xl">Похожие автомобили</h2></div>
                 <a href="fleet.html" class="text-sm text-accent font-medium hover:underline">Все авто →</a>
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="similarCars"></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="similarCars"></div>
             </div>
           </div>
 
@@ -203,25 +203,43 @@
       document.getElementById("bookingForm").addEventListener("submit", async function(e) {
         e.preventDefault();
         var btn = this.querySelector("button[type=submit]");
+        var nameVal = document.getElementById("bookName").value.trim();
+        var phoneVal = document.getElementById("bookPhone").value.trim();
+
+        if (!nameVal) { alert("Ismingizni kiriting"); return; }
+        if (!phoneVal || phoneVal.length < 9) { alert("To'g'ri telefon raqam kiriting"); return; }
+
         btn.textContent = "Отправляется...";
         btn.disabled = true;
         try {
           var params = new URLSearchParams(window.location.search);
           var slug = params.get("slug") || "";
-          await submitOrder({
-            full_name: document.getElementById("bookName").value,
-            phone: document.getElementById("bookPhone").value,
-            comment: document.getElementById("bookComment").value,
-            vehicle_slug: slug,
-            start_date: document.getElementById("bookStart").value,
-            end_date: document.getElementById("bookEnd").value
-          });
+          var orderData = {
+            full_name: nameVal,
+            phone: phoneVal,
+            comment: document.getElementById("bookComment").value
+          };
+          if (slug) orderData.vehicle_slug = slug;
+          var startVal = document.getElementById("bookStart").value;
+          var endVal = document.getElementById("bookEnd").value;
+          if (startVal) orderData.start_date = startVal;
+          if (endVal) orderData.end_date = endVal;
+
+          await submitOrder(orderData);
           btn.textContent = "✓ Заявка отправлена!";
           btn.className = btn.className.replace("bg-accent", "bg-green-500");
+          document.getElementById("bookingForm").reset();
         } catch(err) {
           btn.textContent = "Отправить заявку";
           btn.disabled = false;
-          alert("Ошибка. Позвоните нам: +998 90 123 45 67");
+          var msg = "Хато юз берди. Бизга қўнғироқ қилинг: +998 90 123 45 67";
+          if (err && typeof err === "object") {
+            var details = Object.entries(err).map(function(kv) {
+              return Array.isArray(kv[1]) ? kv[1].join(", ") : kv[1];
+            }).join("\n");
+            if (details) msg = details;
+          }
+          alert(msg);
         }
       });
 
@@ -249,6 +267,7 @@
               renderCarTags();
               renderSpecs(v);
               renderFeatures();
+              renderSimilarFromAPI(v);
             })
             .catch(function() { loadFallback(cat, idx); });
         } else {
@@ -316,6 +335,44 @@
           featEl.innerHTML = tags.map(function(f) {
             return '<span class="bg-gray-100 border border-gray-200 text-gray-600 text-sm font-medium px-4 py-2.5 rounded-full hover:border-accent/30 hover:text-gray-900 transition-colors cursor-default">' + f + '</span>';
           }).join("");
+        }
+
+        function renderSimilarFromAPI(currentVehicle) {
+          var similarEl = document.getElementById("similarCars");
+          fetch("https://api.artrans.uz/fleet/vehicles/")
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+              var all = data.results || data || [];
+              var others = all.filter(function(v) { return v.slug !== currentVehicle.slug; });
+              // same category first, then random
+              var same = others.filter(function(v) { return v.category === currentVehicle.category || v.category_name === currentVehicle.category_name; });
+              var rest = others.filter(function(v) { return v.category !== currentVehicle.category && v.category_name !== currentVehicle.category_name; });
+              var pool = same.concat(rest).slice(0, 3);
+              if (pool.length === 0) { renderSimilarFallback(null, null); return; }
+              similarEl.innerHTML = pool.map(function(v) {
+                var imgUrl = v.main_image || v.image || (v.images && v.images[0] && v.images[0].image) || "";
+                if (imgUrl && !imgUrl.startsWith("http")) imgUrl = "https://api.artrans.uz" + imgUrl;
+                var nameParts = v.name.split(" ");
+                var brand = v.brand || nameParts[0];
+                var model = v.model || nameParts.slice(1).join(" ") || brand;
+                return '<a href="car.html?slug=' + v.slug + '" class="similar-card block bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-accent/30 no-underline transition-all hover:-translate-y-1 hover:shadow-md">' +
+                  '<div class="relative h-36 sm:h-44 overflow-hidden bg-gray-100">' +
+                  (imgUrl ? '<img src="' + imgUrl + '" alt="' + v.name + '" class="w-full h-full object-cover" loading="lazy">' : '<div class="w-full h-full bg-gray-200"></div>') +
+                  '<div class="absolute top-3 left-3 flex gap-1.5"><span class="bg-gray-900/60 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-1 rounded-full uppercase">С ВОДИТЕЛЕМ</span></div>' +
+                  '</div>' +
+                  '<div class="p-4 sm:p-5">' +
+                  '<p class="text-[10px] text-accent font-semibold uppercase tracking-wider">' + brand + '</p>' +
+                  '<h3 class="font-heading text-base font-bold text-gray-900 mt-0.5">' + model + '</h3>' +
+                  '<div class="flex items-center gap-2 text-xs text-gray-500 mt-2">' +
+                  (v.year ? '<span>' + v.year + '</span><span class="w-px h-3 bg-gray-200"></span>' : '') +
+                  (v.seats || v.passenger_count ? '<span>' + (v.seats || v.passenger_count) + ' мест</span><span class="w-px h-3 bg-gray-200"></span>' : '') +
+                  '<span>' + (v.category_name || "") + '</span></div>' +
+                  '<div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">' +
+                  '<p class="text-sm font-bold text-gray-900">' + (v.price || v.price_per_day || "Цена договорная") + '</p>' +
+                  '<span class="text-xs text-accent font-medium">Подробнее →</span></div></div></a>';
+              }).join("");
+            })
+            .catch(function() { renderSimilarFallback(null, null); });
         }
 
         function renderSimilarFallback(car, cat) {
