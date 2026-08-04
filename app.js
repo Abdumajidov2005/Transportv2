@@ -29,12 +29,11 @@ function getResults(data) {
 function loadCategories() {
   return apiFetch("/fleet/categories/").then(function (data) {
     categories = getResults(data);
-    // id bo'yicha tartiblash (admin paneldagi kabi)
     categories.sort(function(a, b) {
       return (a.id || 0) - (b.id || 0);
     });
-    if (categories.length > 0 && !activeCat) {
-      activeCat = categories[0].slug;
+    if (categories.length > 0 && activeCat === null) {
+      activeCat = categories[0].id;
     }
     renderTabs();
     return categories;
@@ -44,13 +43,35 @@ function loadCategories() {
 // ─── FLEET: LOAD VEHICLES ─────────────────────────────
 
 function loadVehicles() {
-  var url = "/fleet/vehicles/";
-  if (activeCat) url += "?category=" + activeCat;
-  return apiFetch(url).then(function (data) {
-    vehicles = getResults(data);
+  if (activeCat === null) {
+    vehicles = [];
     renderGrid();
-    return vehicles;
-  });
+    return Promise.resolve([]);
+  }
+
+  var cat = null;
+  for (var i = 0; i < categories.length; i++) {
+    if (categories[i].id === activeCat) { cat = categories[i]; break; }
+  }
+
+  if (cat && cat.slug) {
+    // slug bor — API filter ishlatamiz
+    return apiFetch("/fleet/vehicles/?category=" + cat.slug).then(function (data) {
+      vehicles = getResults(data);
+      renderGrid();
+      return vehicles;
+    });
+  } else {
+    // slug yo'q — hammani olib, category_slug bo'sh bo'lganlarni ko'rsatamiz
+    return apiFetch("/fleet/vehicles/").then(function (data) {
+      var all = getResults(data);
+      vehicles = all.filter(function(v) {
+        return v.category_slug === "" || v.category_slug === null || v.category_slug === undefined;
+      });
+      renderGrid();
+      return vehicles;
+    });
+  }
 }
 
 // ─── FLEET TABS ───────────────────────────────────────
@@ -67,14 +88,14 @@ function renderTabs() {
     var btn = document.createElement("button");
     btn.textContent = cat.name;
 
-    if (cat.slug === activeCat) {
+    if (cat.id === activeCat) {
       btn.className = "px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold bg-accent text-white border-none cursor-pointer whitespace-nowrap";
     } else {
       btn.className = "px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-medium text-gray-600 border border-gray-200 bg-white cursor-pointer hover:border-accent/50 hover:text-gray-900 transition-all whitespace-nowrap";
     }
 
     btn.addEventListener("click", function () {
-      activeCat = cat.slug;
+      activeCat = cat.id;
       renderTabs();
       loadVehicles();
     });

@@ -809,14 +809,14 @@ async function saveCategory(e) {
   var form = e.target;
   var id = form.id.value;
   var body = { name: form.name.value };
-  if (form.slug.value) body.slug = form.slug.value;
+  body.slug = form.slug.value; // bo'sh bo'lsa ham yuboramiz
   if (form.icon.value) body.icon = form.icon.value;
   if (form.order.value !== '') body.order = parseInt(form.order.value);
 
   try {
     var res = await apiFetchAdmin(
       id ? "/fleet/admin/categories/" + id + "/" : "/fleet/admin/categories/",
-      { method: id ? "PUT" : "POST", headers: authHeaders(), body: JSON.stringify(body) }
+      { method: id ? "PATCH" : "POST", headers: authHeaders(), body: JSON.stringify(body) }
     );
     if (!res || !res.ok) {
       var error = await res.json().catch(function() { return {}; });
