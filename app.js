@@ -265,7 +265,7 @@ function renderClients() {
     var logoUrl = client.logo || client.image || "";
     if (logoUrl && !logoUrl.startsWith("http")) logoUrl = API_BASE + logoUrl;
     var name = client.name || client.company_name || "";
-    allHTML += '<img src="' + logoUrl + '" alt="' + name + '" title="' + name + '" class="h-12 sm:h-16 md:h-20 w-auto object-contain opacity-60 hover:opacity-100 hover:scale-110 transition-all duration-300 grayscale hover:grayscale-0">';
+    allHTML += '<img src="' + logoUrl + '" alt="' + name + '" title="' + name + '" class="h-12 sm:h-16 md:h-20 w-auto object-contain opacity-70 hover:opacity-100 hover:scale-110 transition-all duration-300">';
   });
   allHTML += '</div>';
   wrap.innerHTML = allHTML;
